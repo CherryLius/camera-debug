@@ -1,4 +1,4 @@
-git´´½¨²Ö¿âÌá½»
+gitåˆ›å»ºä»“åº“å¹¶æäº¤
 git init
 git add README.md
 git commit -m "you commint message."

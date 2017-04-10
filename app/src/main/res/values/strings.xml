@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Analyser</string>
+
+    <string-array name="main_items">
+        <item>拍照检测</item>
+    </string-array>
+
+    <!--View character-->
+    <string name="btn_capture">Capture</string>
+</resources>
