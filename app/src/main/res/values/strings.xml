@@ -7,4 +7,5 @@
 
     <!--View character-->
     <string name="btn_capture">Capture</string>
+    <string name="btn_switch">Switch</string>
 </resources>

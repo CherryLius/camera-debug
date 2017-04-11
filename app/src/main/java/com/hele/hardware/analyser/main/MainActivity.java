@@ -17,6 +17,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Toast;
 
+import com.hele.hardware.analyser.BaseFragment;
 import com.hele.hardware.analyser.LifecycleCallback;
 import com.hele.hardware.analyser.R;
 import com.hele.hardware.analyser.capture.CaptureFragment;
@@ -33,6 +34,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
+    private Fragment mFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.fragment_container, fragment)
                 .commit();
+        mFragment = fragment;
     }
 
     @Override
@@ -93,15 +97,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-    private void replaceFragment(Fragment fragment) {
-        if (fragment != null)
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, fragment)
-                    .addToBackStack(null)
-                    .commit();
-    }
-
-
     @Override
     public void onAttachActivity(Fragment fragment) {
         setupWindow();
@@ -110,6 +105,26 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onDetachActivity(Fragment fragment) {
         displayWindow();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mFragment != null && mFragment instanceof BaseFragment) {
+            BaseFragment fragment = (BaseFragment) mFragment;
+            if (fragment.onBackPressed())
+                return;
+        }
+        super.onBackPressed();
+    }
+
+    private void replaceFragment(Fragment fragment) {
+        if (fragment != null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .addToBackStack(null)
+                    .commit();
+            mFragment = fragment;
+        }
     }
 
     private void setupWindow() {

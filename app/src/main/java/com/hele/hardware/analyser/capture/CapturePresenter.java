@@ -1,5 +1,6 @@
 package com.hele.hardware.analyser.capture;
 
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 
 import com.hele.hardware.analyser.camera.CameraCallback;
@@ -23,11 +24,15 @@ public class CapturePresenter implements CaptureContract.Presenter, CameraCallba
 
     @Override
     public void capture() {
-        mCameraCompact.capture();
+        if (mView.isInCapture())
+            mCameraCompact.capture();
+        else
+            mView.showToast("not in Capture!");
     }
 
     @Override
-    public void onPictureSaved(String filePath) {
+    public void onPictureSaved(Bitmap bitmap, String filePath) {
         mView.showToast(filePath);
+        mView.showBitmap(bitmap);
     }
 }

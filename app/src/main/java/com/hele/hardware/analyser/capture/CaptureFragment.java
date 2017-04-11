@@ -1,5 +1,6 @@
 package com.hele.hardware.analyser.capture;
 
+import android.graphics.Bitmap;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -22,6 +23,8 @@ import butterknife.OnClick;
  */
 
 public class CaptureFragment extends BaseFragment implements CaptureContract.View {
+
+    private static final String TAG = "CaptureFragment";
 
     @BindView(R.id.debug_controller)
     ViewGroup debugViewGroup;
@@ -68,13 +71,48 @@ public class CaptureFragment extends BaseFragment implements CaptureContract.Vie
         mPresenter = presenter;
     }
 
-    @OnClick(R.id.debug_btn_capture)
+    @OnClick({R.id.debug_btn_capture, R.id.debug_btn_switch})
     public void click(View view) {
-        mPresenter.capture();
+        switch (view.getId()) {
+            case R.id.debug_btn_capture:
+                mPresenter.capture();
+                break;
+            case R.id.debug_btn_switch:
+                //captureRenderer.setFilter(CaptureRenderer.STATE_CAPTURE);
+                showToast("not impl!");
+                break;
+        }
     }
 
     @Override
     public void showToast(String text) {
         Utils.showToastOnUiThread(getActivity(), text);
+    }
+
+    @Override
+    public void showBitmap(final Bitmap bitmap) {
+        captureRenderer.setBitmap(bitmap);
+        captureRenderer.setFilter(CaptureRenderer.STATE_PICTURE);
+    }
+
+    @Override
+    public boolean isInCapture() {
+        return captureRenderer.isInCapture();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        captureRenderer.destroy();
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        if (isInCapture()) {
+            return false;
+        } else {
+            captureRenderer.setFilter(CaptureRenderer.STATE_CAPTURE);
+            return true;
+        }
     }
 }

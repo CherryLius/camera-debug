@@ -1,10 +1,9 @@
-package com.hele.hardware.analyser.capture;
+package com.hele.hardware.analyser.capture.filter;
 
 import android.content.Context;
-import android.opengl.GLES11Ext;
+import android.opengl.GLES20;
 
 import com.hele.hardware.analyser.R;
-import com.hele.hardware.analyser.opengl.OpenGLUtils;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -12,53 +11,48 @@ import java.nio.FloatBuffer;
 
 import static android.opengl.GLES20.GL_FLOAT;
 import static android.opengl.GLES20.GL_TEXTURE0;
+import static android.opengl.GLES20.GL_TEXTURE_2D;
 import static android.opengl.GLES20.GL_TRIANGLE_STRIP;
 import static android.opengl.GLES20.glActiveTexture;
 import static android.opengl.GLES20.glBindTexture;
+import static android.opengl.GLES20.glDeleteProgram;
 import static android.opengl.GLES20.glDisableVertexAttribArray;
 import static android.opengl.GLES20.glDrawArrays;
 import static android.opengl.GLES20.glEnableVertexAttribArray;
 import static android.opengl.GLES20.glGetAttribLocation;
 import static android.opengl.GLES20.glGetUniformLocation;
 import static android.opengl.GLES20.glUniform1i;
-import static android.opengl.GLES20.glUniformMatrix4fv;
 import static android.opengl.GLES20.glUseProgram;
 import static android.opengl.GLES20.glVertexAttribPointer;
 import static com.hele.hardware.analyser.opengl.GLRotation.CUBE;
 import static com.hele.hardware.analyser.opengl.GLRotation.TEXTURE_ROTATION_0;
 import static com.hele.hardware.analyser.opengl.OpenGLUtils.NO_TEXTURE;
+import static com.hele.hardware.analyser.opengl.OpenGLUtils.loadProgram;
+import static com.hele.hardware.analyser.opengl.OpenGLUtils.readShaderFromRaw;
 
 /**
- * Created by Administrator on 2017/4/6.
+ * Created by Administrator on 2017/4/11.
  */
 
-public class YUVFilter {
+public class ImageFilter implements RendererFilter {
     private static final String A_POSITION = "a_Position";
     private static final String A_TEXTURE_COORDINATE = "a_TextureCoordinate";
-    private static final String U_TEXTURE_MATRIX = "u_TextureMatrix";
     private static final String U_IMAGE_TEXTURE = "u_ImageTexture";
-    /**
-     * 顶点坐标
-     */
-    final FloatBuffer mCubeBuffer;
 
-    /**
-     * 纹理坐标
-     */
-    final FloatBuffer mTextureBuffer;
+    private FloatBuffer mCubeBuffer;
+    private FloatBuffer mTextureBuffer;
 
     private final String mVertexShader;
     private final String mFragmentShader;
+
     private int mGLProgramId;
     private int mGLAttrPosition;
-    private int mGLAttrTextureCoord;
-    private int mGLTextureMatrix;
+    private int mGLAttrTextureCoords;
     private int mGLUniformTexture;
 
-
-    public YUVFilter(Context context) {
-        mVertexShader = OpenGLUtils.readShaderFromRaw(context, R.raw.yuv_vertex_shader);
-        mFragmentShader = OpenGLUtils.readShaderFromRaw(context, R.raw.yuv_fragment_shader);
+    public ImageFilter(Context context) {
+        mVertexShader = readShaderFromRaw(context, R.raw.texture_vertex_shader);
+        mFragmentShader = readShaderFromRaw(context, R.raw.texture_fragment_shader);
 
         mCubeBuffer = ByteBuffer.allocateDirect(CUBE.length * 4)
                 .order(ByteOrder.nativeOrder())
@@ -71,44 +65,45 @@ public class YUVFilter {
         mTextureBuffer.put(TEXTURE_ROTATION_0).position(0);
     }
 
-    public void init() {
-        mGLProgramId = OpenGLUtils.loadProgram(mVertexShader, mFragmentShader);
-        //绑定变量的句柄
+    @Override
+    public void setup() {
+        mGLProgramId = loadProgram(mVertexShader, mFragmentShader);
         mGLAttrPosition = glGetAttribLocation(mGLProgramId, A_POSITION);
-        mGLAttrTextureCoord = glGetAttribLocation(mGLProgramId, A_TEXTURE_COORDINATE);
-        mGLTextureMatrix = glGetUniformLocation(mGLProgramId, U_TEXTURE_MATRIX);
+        mGLAttrTextureCoords = glGetAttribLocation(mGLProgramId, A_TEXTURE_COORDINATE);
         mGLUniformTexture = glGetUniformLocation(mGLProgramId, U_IMAGE_TEXTURE);
     }
 
-    public void updateTextureBuffer(float[] texture) {
-        mTextureBuffer.clear();
-        mTextureBuffer.put(texture).position(0);
+    @Override
+    public void destroy() {
+        glDeleteProgram(mGLProgramId);
     }
 
+    @Override
     public void render(int textureId, float[] mtx) {
-        if (mGLProgramId == 0)
+        if (textureId == NO_TEXTURE)
             return;
         glUseProgram(mGLProgramId);
 
         mCubeBuffer.position(0);
-        glVertexAttribPointer(mGLAttrPosition, 2, GL_FLOAT, false, 0, mCubeBuffer);
         glEnableVertexAttribArray(mGLAttrPosition);
+        glVertexAttribPointer(mGLAttrPosition, 2, GL_FLOAT, false, 0, mCubeBuffer);
 
         mTextureBuffer.position(0);
-        glVertexAttribPointer(mGLAttrTextureCoord, 2, GL_FLOAT, false, 0, mTextureBuffer);
-        glEnableVertexAttribArray(mGLAttrTextureCoord);
+        glEnableVertexAttribArray(mGLAttrTextureCoords);
+        glVertexAttribPointer(mGLAttrTextureCoords, 2, GL_FLOAT, false, 0, mTextureBuffer);
 
-        glUniformMatrix4fv(mGLTextureMatrix, 1, false, mtx, 0);
-
-        if (textureId != NO_TEXTURE) {
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, textureId);
-            glUniform1i(mGLUniformTexture, 0);
-        }
-
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, textureId);
+        glUniform1i(mGLUniformTexture, 0);
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
         glDisableVertexAttribArray(mGLAttrPosition);
-        glDisableVertexAttribArray(mGLAttrTextureCoord);
-        glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, 0);
+        glDisableVertexAttribArray(mGLAttrTextureCoords);
+        glBindTexture(GLES20.GL_TEXTURE_2D, 0);
+    }
+
+    @Override
+    public void updateTexture(float[] mtx) {
+
     }
 }

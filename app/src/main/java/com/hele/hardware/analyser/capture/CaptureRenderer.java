@@ -1,12 +1,17 @@
 package com.hele.hardware.analyser.capture;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.support.annotation.NonNull;
+import android.support.v4.util.ArrayMap;
 
 import com.hele.hardware.analyser.camera.CameraCompact;
+import com.hele.hardware.analyser.capture.filter.ImageFilter;
+import com.hele.hardware.analyser.capture.filter.RendererFilter;
+import com.hele.hardware.analyser.capture.filter.YUVFilter;
 import com.hele.hardware.analyser.opengl.GLRotation;
 import com.hele.hardware.analyser.opengl.OpenGLUtils;
 import com.hele.hardware.analyser.opengl.Rotation;
@@ -23,18 +28,33 @@ public class CaptureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
 
     private static final String TAG = "CaptureRenderer";
 
+    private Context mContext;
     private GLSurfaceView mGLSurfaceView;
 
-    private YUVFilter mFilter;
+    private RendererFilter mFilter;
     private SurfaceTexture mSurfaceTexture;
     private int mTextureId = OpenGLUtils.NO_TEXTURE;
     private CameraCompact mCameraCompact;
 
+    private ArrayMap<Integer, RendererFilter> mFilterMap;
+
+    private int mState;
+
+    static final int STATE_CAPTURE = 0;
+    static final int STATE_PICTURE = 1;
+
+    private int mBmTexId = OpenGLUtils.NO_TEXTURE;
+
     public CaptureRenderer(@NonNull Context context, @NonNull GLSurfaceView glSurfaceView) {
+        mContext = context;
         mGLSurfaceView = glSurfaceView;
+        mState = STATE_CAPTURE;
 
-        mFilter = new YUVFilter(context);
+        mFilterMap = new ArrayMap<>(2);
 
+        filterFromState(mState);
+
+        //Camera preview textureId
         mTextureId = OpenGLUtils.getExternalOESTextureId();
         mSurfaceTexture = new SurfaceTexture(mTextureId);
         mSurfaceTexture.setOnFrameAvailableListener(CaptureRenderer.this);
@@ -55,7 +75,7 @@ public class CaptureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
         GLES20.glEnable(GLES20.GL_CULL_FACE);
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
-        mFilter.init();
+        mFilter.setup();
     }
 
     @Override
@@ -67,12 +87,16 @@ public class CaptureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
     public void onDrawFrame(GL10 gl) {
         GLES20.glClearColor(0, 0, 0, 0);
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-
-        if (mSurfaceTexture != null) {
-            mSurfaceTexture.updateTexImage();
-            float[] mtx = new float[16];
-            mSurfaceTexture.getTransformMatrix(mtx);
-            mFilter.render(mTextureId, mtx);
+        if (mState == STATE_PICTURE) {
+            HLog.e(TAG, "draw picture texId=" + mBmTexId);
+            mFilter.render(mBmTexId, null);
+        } else if (mState == STATE_CAPTURE) {
+            if (mSurfaceTexture != null) {
+                mSurfaceTexture.updateTexImage();
+                float[] mtx = new float[16];
+                mSurfaceTexture.getTransformMatrix(mtx);
+                mFilter.render(mTextureId, mtx);
+            }
         }
     }
 
@@ -80,7 +104,7 @@ public class CaptureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
         mGLSurfaceView.onResume();
         mCameraCompact.start();
         boolean flipHorizontal = mCameraCompact.isFrontCamera();
-        HLog.d("Test", "orientation=" + mCameraCompact.getOrientation());
+        HLog.d(TAG, "orientation=" + mCameraCompact.getOrientation());
         adjustPosition(mCameraCompact.getOrientation(), flipHorizontal, !flipHorizontal);
     }
 
@@ -89,19 +113,78 @@ public class CaptureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
         mGLSurfaceView.onPause();
     }
 
+    public void destroy() {
+        mGLSurfaceView.queueEvent(new Runnable() {
+            @Override
+            public void run() {
+                for (RendererFilter f : mFilterMap.values()) {
+                    if (f != null)
+                        f.destroy();
+                }
+            }
+        });
+    }
+
     @Override
     public void onFrameAvailable(SurfaceTexture surfaceTexture) {
-        mGLSurfaceView.requestRender();
+        if (mState == STATE_CAPTURE) {
+            mGLSurfaceView.requestRender();
+        }
     }
 
     private void adjustPosition(int orientation, boolean flipHorizontal, boolean flipVertical) {
         Rotation rotation = Rotation.valueOf(orientation);
         HLog.i(TAG, "[adjustPosition] orientation=" + orientation + ",rotation=" + rotation);
         float[] textureCords = GLRotation.getRotation(rotation, flipHorizontal, flipVertical);
-        mFilter.updateTextureBuffer(textureCords);
+        mFilter.updateTexture(textureCords);
     }
 
     public CameraCompact getCameraCompat() {
         return mCameraCompact;
+    }
+
+    public void setFilter(final int state) {
+        mGLSurfaceView.queueEvent(new Runnable() {
+            @Override
+            public void run() {
+                mState = state;
+                if (mFilter != null)
+                    mFilter.destroy();
+                filterFromState(state);
+                mFilter.setup();
+            }
+        });
+        mGLSurfaceView.requestRender();
+    }
+
+    public void setBitmap(final Bitmap bm) {
+        if (bm != null) {
+            mGLSurfaceView.queueEvent(new Runnable() {
+                @Override
+                public void run() {
+                    mBmTexId = OpenGLUtils.loadTexture(bm,
+                            OpenGLUtils.NO_TEXTURE, true);
+                }
+            });
+
+        }
+    }
+
+    public boolean isInCapture() {
+        return mState == STATE_CAPTURE;
+    }
+
+    private void filterFromState(final int state) {
+        if (mFilterMap.containsKey(state)) {
+            mFilter = mFilterMap.get(state);
+        } else {
+            if (state == STATE_CAPTURE) {
+                mFilter = new YUVFilter(mContext);
+            } else if (state == STATE_PICTURE) {
+                mFilter = new ImageFilter(mContext);
+            }
+            if (mFilter != null)
+                mFilterMap.put(state, mFilter);
+        }
     }
 }

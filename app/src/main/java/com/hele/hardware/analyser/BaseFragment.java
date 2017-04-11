@@ -28,4 +28,8 @@ public class BaseFragment extends Fragment {
             lifecycleCallback = null;
         }
     }
+
+    public boolean onBackPressed() {
+        return false;
+    }
 }

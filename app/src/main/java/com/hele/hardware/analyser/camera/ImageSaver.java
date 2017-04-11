@@ -12,6 +12,7 @@ import android.media.Image;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.util.DisplayMetrics;
 
 import com.hele.hardware.analyser.util.HLog;
 
@@ -65,6 +66,7 @@ public class ImageSaver implements Runnable {
 
     @Override
     public void run() {
+        Bitmap bitmap = null;
         if (mImage != null) {
             ByteBuffer buffer = mImage.getPlanes()[0].getBuffer();
             byte[] bytes = new byte[buffer.remaining()];
@@ -72,11 +74,15 @@ public class ImageSaver implements Runnable {
             mData = bytes;
         } else {
             if (mFunction.isFrontCamera()) {
-                Bitmap bitmap = rotateBitmap(BitmapFactory.decodeByteArray(mData, 0, mData.length));
+                bitmap = rotateBitmap(BitmapFactory.decodeByteArray(mData, 0, mData.length));
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
                 mData = bos.toByteArray();
             }
+        }
+
+        if (bitmap == null) {
+            bitmap = decodeBitmap(mContext, mData);
         }
 
         FileOutputStream outputStream = null;
@@ -87,7 +93,7 @@ public class ImageSaver implements Runnable {
 
             fileScan(mFile.getAbsolutePath());
             if (mFunction.getCameraCallback() != null) {
-                mFunction.getCameraCallback().onPictureSaved(mFile.getAbsolutePath());
+                mFunction.getCameraCallback().onPictureSaved(bitmap, mFile.getAbsolutePath());
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -124,5 +130,46 @@ public class ImageSaver implements Runnable {
         mMatrix.postScale(-1, 1);
         Bitmap ret = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), mMatrix, true);
         return ret;
+    }
+
+    private static Bitmap decodeBitmap(Context context, byte[] bytes) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
+        HLog.d(TAG, "options: " + options.outWidth + "x" + options.outHeight);
+
+        DisplayMetrics dm = context.getResources().getDisplayMetrics();
+        int targetDensityDpi = dm.densityDpi;
+        int expectW = dm.widthPixels;
+        int expectH = dm.heightPixels;
+        options.inSampleSize = calculateInSampleSize(options.outWidth, options.outHeight, expectW, expectH);
+
+        double xScale = options.outWidth / (float) expectW;
+        double yScale = options.outHeight / (float) expectH;
+        HLog.d(TAG, "xScale=" + xScale + ",yScale=" + yScale
+                + ",targetDensity=" + targetDensityDpi);
+
+        options.inTargetDensity = targetDensityDpi;
+        options.inJustDecodeBounds = false;
+        Bitmap ret = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
+        return ret;
+    }
+
+    private static int calculateInSampleSize(int outWidth, int outHeight, int expectW, int expectH) {
+        int inSampleSize = 1;
+        if (outWidth > expectW || outHeight > expectH) {
+            final int halfHeight = outWidth / 2;
+            final int halfWidth = outHeight / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and
+            // keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) > expectH
+                    && (halfWidth / inSampleSize) > expectW) {
+                inSampleSize *= 2;
+            }
+        }
+        HLog.i(TAG, "inSampleSize=" + inSampleSize);
+        return inSampleSize;
     }
 }
