@@ -1,5 +1,6 @@
 package com.hele.hardware.analyser.capture;
 
+import android.Manifest;
 import android.graphics.Bitmap;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
@@ -17,6 +18,8 @@ import com.hele.hardware.analyser.util.Utils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.hele.hardware.analyser.common.Constants.PERMISSION_REQUEST_CODE_CAMERA;
 
 /**
  * Created by Administrator on 2017/4/6.
@@ -57,7 +60,13 @@ public class CaptureFragment extends BaseFragment implements CaptureContract.Vie
     @Override
     public void onResume() {
         super.onResume();
-        captureRenderer.resume();
+        if (Utils.checkSelfPermission(getActivity(), Manifest.permission.CAMERA)) {
+            captureRenderer.resume();
+        } else {
+            requestPermissions(new String[]{Manifest.permission.CAMERA},
+                    PERMISSION_REQUEST_CODE_CAMERA);
+        }
+
     }
 
     @Override
@@ -113,6 +122,19 @@ public class CaptureFragment extends BaseFragment implements CaptureContract.Vie
         } else {
             captureRenderer.setFilter(CaptureRenderer.STATE_CAPTURE);
             return true;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE_CAMERA:
+                if (!Utils.checkPermissionGrantResults(grantResults)) {
+                    showToast("没有摄像头权限");
+                    getActivity().finish();
+                }
+                break;
         }
     }
 }

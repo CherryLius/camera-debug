@@ -1,12 +1,8 @@
 package com.hele.hardware.analyser.main;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -15,18 +11,14 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.Toast;
 
 import com.hele.hardware.analyser.BaseFragment;
 import com.hele.hardware.analyser.LifecycleCallback;
 import com.hele.hardware.analyser.R;
 import com.hele.hardware.analyser.capture.CaptureFragment;
-import com.hele.hardware.analyser.util.Utils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static com.hele.hardware.analyser.common.Constants.PERMISSION_REQUEST_CODE_CAMERA;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, LifecycleCallback {
 
@@ -54,13 +46,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Fragment fragment = null;
         switch (position) {
             case 0:
-                if (Utils.checkSelfPermission(this, Manifest.permission.CAMERA)) {
-                    fragment = new CaptureFragment();
-                } else {
-                    ActivityCompat.requestPermissions(this,
-                            new String[]{Manifest.permission.CAMERA},
-                            PERMISSION_REQUEST_CODE_CAMERA);
-                }
+                fragment = new CaptureFragment();
                 break;
         }
         replaceFragment(fragment);
@@ -74,28 +60,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 //            mFragmentMap.put(key, new SoftReference<>(f));
 //        }
 //    }
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        StringBuilder sb = new StringBuilder();
-//        for (int i = 0; i < permissions.length; i++) {
-//            sb.append("permission: ")
-//                    .append(permissions[i])
-//                    .append("--->grantResult: " + grantResults[i]);
-//        }
-//        HLog.i("Test", "requestCode=" + requestCode + ", " + sb.toString());
-        switch (requestCode) {
-            case PERMISSION_REQUEST_CODE_CAMERA:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    replaceFragment(new CaptureFragment());
-                } else {
-                    Toast.makeText(this, "没有摄像头权限", Toast.LENGTH_SHORT).show();
-                }
-                break;
-        }
-    }
 
     @Override
     public void onAttachActivity(Fragment fragment) {

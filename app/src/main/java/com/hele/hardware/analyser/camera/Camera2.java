@@ -180,11 +180,12 @@ public class Camera2 extends CameraDevice.StateCallback implements Function, Ima
 
     @Override
     public void stopPreview() {
-        try {
-            mCaptureSession.stopRepeating();
-        } catch (CameraAccessException e) {
-            e.printStackTrace();
-        }
+        if (mCaptureSession != null)
+            try {
+                mCaptureSession.stopRepeating();
+            } catch (CameraAccessException e) {
+                e.printStackTrace();
+            }
     }
 
     @Override

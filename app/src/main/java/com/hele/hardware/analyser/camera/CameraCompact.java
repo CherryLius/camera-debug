@@ -56,19 +56,20 @@ public class CameraCompact {
     }
 
     private void startBackgroundThread() {
-        mBackgroundThread = new HandlerThread("Camera2");
+        mBackgroundThread = new HandlerThread("Camera");
         mBackgroundThread.start();
         mBackgroundHandler = new Handler(mBackgroundThread.getLooper());
     }
 
     private void stopBackgroundThread() {
-        mBackgroundThread.quitSafely();
-        try {
-            mBackgroundThread.join();
-            mBackgroundThread = null;
-            mBackgroundHandler = null;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        if (mBackgroundThread != null)
+            try {
+                mBackgroundThread.quitSafely();
+                mBackgroundThread.join();
+                mBackgroundThread = null;
+                mBackgroundHandler = null;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
     }
 }
