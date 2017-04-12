@@ -17,8 +17,6 @@ import com.hele.hardware.analyser.opengl.OpenGLUtils;
 import com.hele.hardware.analyser.opengl.Rotation;
 import com.hele.hardware.analyser.util.HLog;
 
-import java.lang.ref.SoftReference;
-
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -39,7 +37,7 @@ public class CaptureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
     private CameraCompact mCameraCompact;
 
     private ArrayMap<Integer, RendererFilter> mFilterMap;
-    private SoftReference<Bitmap> mBitmapReference;
+    private Bitmap mBitmap;
 
     static final int STATE_CAPTURE = 0;
     static final int STATE_PICTURE = 1;
@@ -88,9 +86,8 @@ public class CaptureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
         GLES20.glClearColor(0, 0, 0, 0);
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
         if (mState == STATE_PICTURE) {
-            Bitmap bitmap = getBitmapFromRefer();
-            int textureId = OpenGLUtils.loadTexture(bitmap, OpenGLUtils.NO_TEXTURE);
-            HLog.e(TAG, "draw picture");
+            int textureId = OpenGLUtils.loadTexture(mBitmap, OpenGLUtils.NO_TEXTURE);
+            HLog.e(TAG, "draw picture : " + textureId + ", bm=" + mBitmap);
             mFilter.render(textureId, null);
         } else if (mState == STATE_CAPTURE) {
             if (mSurfaceTexture != null) {
@@ -125,14 +122,7 @@ public class CaptureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
                 }
             }
         });
-        Bitmap bm = getBitmapFromRefer();
-        if (bm != null && !bm.isRecycled()) {
-            bm.recycle();
-        }
-        if (mBitmapReference != null) {
-            mBitmapReference.clear();
-            mBitmapReference = null;
-        }
+        recycle();
     }
 
     @Override
@@ -151,6 +141,9 @@ public class CaptureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
         mGLSurfaceView.queueEvent(new Runnable() {
             @Override
             public void run() {
+                if (mState == STATE_PICTURE && mState != state) {
+                    recycle();
+                }
                 mState = state;
                 if (mFilter != null)
                     mFilter.destroy();
@@ -162,11 +155,9 @@ public class CaptureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
     }
 
     public void setBitmap(final Bitmap bm) {
-        Bitmap oldBitmap = getBitmapFromRefer();
-        if (bm != null && oldBitmap != bm) {
-            if (oldBitmap != null && !oldBitmap.isRecycled())
-                oldBitmap.recycle();
-            mBitmapReference = new SoftReference<>(bm);
+        if (bm != null && mBitmap != bm) {
+            recycle();
+            mBitmap = bm;
         }
     }
 
@@ -195,9 +186,12 @@ public class CaptureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
         }
     }
 
-    private Bitmap getBitmapFromRefer() {
-        if (mBitmapReference == null)
-            return null;
-        return mBitmapReference.get();
+    private void recycle() {
+        HLog.i(TAG, "recycle bitmap");
+        if (mBitmap != null) {
+            if (!mBitmap.isRecycled())
+                mBitmap.recycle();
+            mBitmap = null;
+        }
     }
 }
