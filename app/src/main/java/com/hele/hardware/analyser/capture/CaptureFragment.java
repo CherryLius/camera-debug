@@ -131,7 +131,7 @@ public class CaptureFragment extends BaseFragment implements CaptureContract.Vie
         switch (requestCode) {
             case PERMISSION_REQUEST_CODE_CAMERA:
                 if (!Utils.checkPermissionGrantResults(grantResults)) {
-                    showToast("Ã»ÓĞÉãÏñÍ·È¨ÏŞ");
+                    showToast("æ²¡æœ‰æ‘„åƒå¤´æƒé™");
                     getActivity().finish();
                 }
                 break;

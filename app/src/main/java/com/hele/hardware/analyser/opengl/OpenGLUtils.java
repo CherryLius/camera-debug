@@ -141,6 +141,10 @@ public class OpenGLUtils {
         return texture[0];
     }
 
+    public static int loadTexture(final Bitmap bitmap, final int textureId) {
+        return loadTexture(bitmap, textureId, false);
+    }
+
     public static int loadTexture(final Bitmap bitmap, final int textureId, boolean recycle) {
         if (bitmap == null) return NO_TEXTURE;
         int[] textures = new int[1];
