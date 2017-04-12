@@ -129,8 +129,10 @@ public class CaptureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
         if (bm != null && !bm.isRecycled()) {
             bm.recycle();
         }
-        mBitmapReference.clear();
-        mBitmapReference = null;
+        if (mBitmapReference != null) {
+            mBitmapReference.clear();
+            mBitmapReference = null;
+        }
     }
 
     @Override

@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.DisplayMetrics;
 
+import com.hele.hardware.analyser.util.FileUtils;
 import com.hele.hardware.analyser.util.HLog;
 
 import java.io.ByteArrayOutputStream;
@@ -61,6 +62,7 @@ public class ImageSaver implements Runnable {
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
         String fileName = format.format(date) + ".jpg";
         mFile = new File(parentPath, fileName);
+        FileUtils.checkFileExist(mFile.getParentFile());
     }
 
 

@@ -40,7 +40,7 @@ public class FileUtils {
             }
     }
 
-    private static void checkFileExist(File file) {
+    public static void checkFileExist(File file) {
         if (!file.exists())
             file.mkdirs();
     }
