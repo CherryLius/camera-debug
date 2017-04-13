@@ -16,6 +16,8 @@ public interface CaptureContract {
 
         void showBitmap(Bitmap bitmap);
 
+        void updateController(boolean isInCapture);
+
         boolean isInCapture();
     }
 

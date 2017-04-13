@@ -54,6 +54,8 @@ public class Camera2 extends CameraDevice.StateCallback implements Function, Ima
     private CameraDevice mCamera;
     private ImageReader mImageReader;
     private CameraCaptureSession mCaptureSession;
+    private CaptureRequest mPreviewRequest;
+    private CaptureRequest mCaptureRequest;
 
     private Surface mSurface;
     private Handler mBackgroundHandler;
@@ -88,7 +90,6 @@ public class Camera2 extends CameraDevice.StateCallback implements Function, Ima
             mImageReader.setOnImageAvailableListener(this, mBackgroundHandler);
             mCameraManager.openCamera(mCameraId + "", this, mBackgroundHandler);
 
-            //debugMethod();
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
@@ -117,6 +118,15 @@ public class Camera2 extends CameraDevice.StateCallback implements Function, Ima
             return;
         }
         try {
+            if (mCaptureSession != null && mCaptureRequest != null) {
+                mCaptureSession.capture(mCaptureRequest, new CameraCaptureSession.CaptureCallback() {
+                    @Override
+                    public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
+                        super.onCaptureCompleted(session, request, result);
+                    }
+                }, mBackgroundHandler);
+                return;
+            }
             CaptureRequest.Builder requestBuilder = mCamera.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
             requestBuilder.addTarget(mImageReader.getSurface());
             //自动对焦
@@ -129,8 +139,8 @@ public class Camera2 extends CameraDevice.StateCallback implements Function, Ima
             HLog.e(TAG, "display rotation=" + rotation);
             requestBuilder.set(CaptureRequest.JPEG_ORIENTATION, getOrientation(rotation));
 
-            CaptureRequest request = requestBuilder.build();
-            mCaptureSession.capture(request, new CameraCaptureSession.CaptureCallback() {
+            mCaptureRequest = requestBuilder.build();
+            mCaptureSession.capture(mCaptureRequest, new CameraCaptureSession.CaptureCallback() {
 
                 @Override
                 public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
@@ -146,6 +156,10 @@ public class Camera2 extends CameraDevice.StateCallback implements Function, Ima
     @Override
     public void startPreview() {
         try {
+            if (mCaptureSession != null && mPreviewRequest != null) {
+                mCaptureSession.setRepeatingRequest(mPreviewRequest, null, mBackgroundHandler);
+                return;
+            }
             final CaptureRequest.Builder requestBuilder = mCamera.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
             requestBuilder.addTarget(mSurface);
             mCamera.createCaptureSession(Arrays.asList(mSurface, mImageReader.getSurface()), new CameraCaptureSession.StateCallback() {
@@ -161,8 +175,8 @@ public class Camera2 extends CameraDevice.StateCallback implements Function, Ima
                         requestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
                         //闪光灯
                         requestBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
-                        CaptureRequest request = requestBuilder.build();
-                        mCaptureSession.setRepeatingRequest(request, null, mBackgroundHandler);
+                        mPreviewRequest = requestBuilder.build();
+                        mCaptureSession.setRepeatingRequest(mPreviewRequest, null, mBackgroundHandler);
                     } catch (CameraAccessException e) {
                         e.printStackTrace();
                     }
@@ -223,6 +237,7 @@ public class Camera2 extends CameraDevice.StateCallback implements Function, Ima
 
     @Override
     public void onImageAvailable(ImageReader reader) {
+        stopPreview();
         mBackgroundHandler.post(new ImageSaver(mContext, reader.acquireNextImage(), mFilePath, this));
     }
 

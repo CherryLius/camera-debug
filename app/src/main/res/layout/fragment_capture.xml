@@ -8,25 +8,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <LinearLayout
-        android:id="@+id/debug_controller"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right|center_vertical"
-        android:orientation="vertical">
+    <include layout="@layout/layout_capture_controller" />
 
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/debug_btn_capture"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/btn_capture" />
-
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/debug_btn_switch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/btn_switch" />
-    </LinearLayout>
+    <android.support.v7.widget.ViewStubCompat
+        android:id="@+id/stub_result"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout="@layout/layout_analytic_result" />
 </FrameLayout>

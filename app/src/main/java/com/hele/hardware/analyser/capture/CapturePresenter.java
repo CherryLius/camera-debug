@@ -10,7 +10,7 @@ import com.hele.hardware.analyser.camera.CameraCompact;
  * Created by Administrator on 2017/4/7.
  */
 
-public class CapturePresenter implements CaptureContract.Presenter, CameraCallback {
+public class CapturePresenter implements CaptureContract.Presenter, CameraCallback, CaptureRenderer.OnFilterChangeListener {
 
     CaptureContract.View mView;
     CameraCompact mCameraCompact;
@@ -20,6 +20,7 @@ public class CapturePresenter implements CaptureContract.Presenter, CameraCallba
         mView.setPresenter(this);
         mCameraCompact = renderer.getCameraCompat();
         mCameraCompact.setCallback(this);
+        renderer.setFilterChangeListener(this);
     }
 
     @Override
@@ -34,5 +35,12 @@ public class CapturePresenter implements CaptureContract.Presenter, CameraCallba
     public void onPictureSaved(Bitmap bitmap, String filePath) {
         mView.showToast(filePath);
         mView.showBitmap(bitmap);
+        mView.updateController(false);
+    }
+
+    @Override
+    public void onFilterChanged(int filter) {
+        if (filter == CaptureRenderer.STATE_CAPTURE)
+            mCameraCompact.startPreview();
     }
 }

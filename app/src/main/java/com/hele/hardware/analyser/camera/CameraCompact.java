@@ -43,6 +43,10 @@ public class CameraCompact {
         stopBackgroundThread();
     }
 
+    public void startPreview() {
+        mFunction.startPreview();
+    }
+
     public void setCallback(CameraCallback callback) {
         mFunction.setCameraCallback(callback);
     }

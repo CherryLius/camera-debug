@@ -6,8 +6,11 @@ import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.ViewStubCompat;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -29,10 +32,14 @@ public class CaptureFragment extends BaseFragment implements CaptureContract.Vie
 
     private static final String TAG = "CaptureFragment";
 
-    @BindView(R.id.debug_controller)
-    ViewGroup debugViewGroup;
-    @BindView(R.id.debug_btn_capture)
-    AppCompatButton captureBtn;
+    @BindView(R.id.layout_capture)
+    ViewGroup captureLayout;
+    @BindView(R.id.layout_picture)
+    ViewGroup pictureLayout;
+    @BindView(R.id.stub_result)
+    ViewStubCompat resultViewStub;
+    StubViewHolder mStubHolder;
+
     @BindView(R.id.gl_surface)
     GLSurfaceView glSurfaceView;
     CaptureRenderer captureRenderer;
@@ -80,15 +87,25 @@ public class CaptureFragment extends BaseFragment implements CaptureContract.Vie
         mPresenter = presenter;
     }
 
-    @OnClick({R.id.debug_btn_capture, R.id.debug_btn_switch})
+    @OnClick({R.id.iv_capture, R.id.iv_switch, R.id.iv_analyse, R.id.iv_cancel})
     public void click(View view) {
         switch (view.getId()) {
-            case R.id.debug_btn_capture:
+            case R.id.iv_capture:
                 mPresenter.capture();
                 break;
-            case R.id.debug_btn_switch:
-                //captureRenderer.setFilter(CaptureRenderer.STATE_CAPTURE);
+            case R.id.iv_switch:
                 showToast("not impl!");
+                break;
+            case R.id.iv_analyse:
+                if (mStubHolder == null) {
+                    mStubHolder = new StubViewHolder(resultViewStub.inflate());
+                } else {
+                    mStubHolder.show();
+                }
+                break;
+            case R.id.iv_cancel:
+                captureRenderer.setFilter(CaptureRenderer.STATE_CAPTURE);
+                updateController(true);
                 break;
         }
     }
@@ -102,6 +119,18 @@ public class CaptureFragment extends BaseFragment implements CaptureContract.Vie
     public void showBitmap(final Bitmap bitmap) {
         captureRenderer.setBitmap(bitmap);
         captureRenderer.setFilter(CaptureRenderer.STATE_PICTURE);
+    }
+
+    @Override
+    public void updateController(final boolean isInCapture) {
+        if (getActivity() != null)
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    captureLayout.setVisibility(isInCapture ? View.VISIBLE : View.GONE);
+                    pictureLayout.setVisibility(!isInCapture ? View.VISIBLE : View.GONE);
+                }
+            });
     }
 
     @Override
@@ -120,7 +149,12 @@ public class CaptureFragment extends BaseFragment implements CaptureContract.Vie
         if (isInCapture()) {
             return false;
         } else {
-            captureRenderer.setFilter(CaptureRenderer.STATE_CAPTURE);
+            if (mStubHolder != null && mStubHolder.isShowing()) {
+                mStubHolder.hide();
+            } else {
+                updateController(true);
+                captureRenderer.setFilter(CaptureRenderer.STATE_CAPTURE);
+            }
             return true;
         }
     }
@@ -135,6 +169,50 @@ public class CaptureFragment extends BaseFragment implements CaptureContract.Vie
                     getActivity().finish();
                 }
                 break;
+        }
+    }
+
+    class StubViewHolder {
+
+        View rootView;
+        @BindView(R.id.tv_result)
+        AppCompatTextView textView;
+
+        public StubViewHolder(View view) {
+            rootView = view;
+            ButterKnife.bind(this, view);
+            textView.setMovementMethod(ScrollingMovementMethod.getInstance());
+            rootView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    return true;
+                }
+            });
+        }
+
+        @OnClick({R.id.tv_close, R.id.btn_confirm})
+        void onClick(View view) {
+            switch (view.getId()) {
+                case R.id.tv_close:
+                    rootView.setVisibility(View.GONE);
+                    break;
+                case R.id.btn_confirm:
+                    rootView.setVisibility(View.GONE);
+            }
+        }
+
+        void show() {
+            if (rootView != null)
+                rootView.setVisibility(View.VISIBLE);
+        }
+
+        void hide() {
+            if (rootView != null)
+                rootView.setVisibility(View.GONE);
+        }
+
+        boolean isShowing() {
+            return rootView != null && rootView.getVisibility() == View.VISIBLE;
         }
     }
 }

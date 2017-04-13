@@ -2,10 +2,13 @@
     <string name="app_name">Analyser</string>
 
     <string-array name="main_items">
-        <item>拍照检测</item>
+        <item>免疫检测</item>
     </string-array>
 
     <!--View character-->
-    <string name="btn_capture">Capture</string>
-    <string name="btn_switch">Switch</string>
+    <string name="text_capture">Capture</string>
+    <string name="text_switch">Switch</string>
+    <string name="text_close">关闭</string>
+    <string name="text_confirm">确认</string>
+    <string name="text_debug">显示测试结果！</string>
 </resources>

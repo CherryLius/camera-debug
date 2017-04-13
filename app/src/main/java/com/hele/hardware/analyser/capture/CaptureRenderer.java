@@ -43,6 +43,8 @@ public class CaptureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
     static final int STATE_PICTURE = 1;
     private int mState;
 
+    private OnFilterChangeListener mFilterChangeListener;
+
     public CaptureRenderer(@NonNull Context context, @NonNull GLSurfaceView glSurfaceView) {
         mContext = context;
         mGLSurfaceView = glSurfaceView;
@@ -138,6 +140,9 @@ public class CaptureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
 
     public void setFilter(final int state) {
         HLog.i(TAG, "setFilter");
+        if (mFilterChangeListener != null && mState != state)
+            mFilterChangeListener.onFilterChanged(state);
+
         mGLSurfaceView.queueEvent(new Runnable() {
             @Override
             public void run() {
@@ -163,6 +168,10 @@ public class CaptureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
 
     public boolean isInCapture() {
         return mState == STATE_CAPTURE;
+    }
+
+    public void setFilterChangeListener(OnFilterChangeListener l) {
+        mFilterChangeListener = l;
     }
 
     private void adjustPosition(int orientation, boolean flipHorizontal, boolean flipVertical) {
@@ -193,5 +202,9 @@ public class CaptureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
                 mBitmap.recycle();
             mBitmap = null;
         }
+    }
+
+    public interface OnFilterChangeListener {
+        void onFilterChanged(int filter);
     }
 }

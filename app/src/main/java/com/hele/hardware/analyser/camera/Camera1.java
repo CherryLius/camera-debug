@@ -75,9 +75,9 @@ public class Camera1 implements Function {
         mCamera.takePicture(null, null, new Camera.PictureCallback() {
             @Override
             public void onPictureTaken(byte[] data, Camera camera) {
-                //stopPreview();
+                stopPreview();
                 mBackgroundHandler.post(new ImageSaver(mContext, data, mFilePath, Camera1.this));
-                startPreview();
+                //startPreview();
             }
         });
     }
