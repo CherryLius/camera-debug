@@ -39,6 +39,13 @@
             android:layout_gravity="center|bottom"
             android:layout_marginBottom="12dp"
             android:src="@drawable/ic_capture_white_64dp" />
+
+        <com.cherry.library.ui.view.CountDownView
+            android:id="@+id/count_down_view"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:visibility="gone" />
     </FrameLayout>
 
     <FrameLayout

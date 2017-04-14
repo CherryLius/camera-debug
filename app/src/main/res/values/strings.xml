@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">Analyser</string>
 
     <string-array name="main_items">
@@ -11,4 +11,9 @@
     <string name="text_close">关闭</string>
     <string name="text_confirm">确认</string>
     <string name="text_debug">显示测试结果！</string>
+
+    <string name="hour_minute_second"><xliff:g id="hour">%1$d</xliff:g>时<xliff:g id="minute">%2$d</xliff:g>分<xliff:g id="minute">%3$d</xliff:g>秒</string>
+    <string name="minute_second"><xliff:g id="minute">%1$d</xliff:g>分<xliff:g id="minute">%2$d</xliff:g>秒</string>
+    <string name="second"><xliff:g id="minute">%1$d</xliff:g>秒</string>
+
 </resources>

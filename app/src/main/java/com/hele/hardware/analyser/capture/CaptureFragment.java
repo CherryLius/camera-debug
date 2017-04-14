@@ -6,6 +6,7 @@ import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.ViewStubCompat;
 import android.text.method.ScrollingMovementMethod;
@@ -13,13 +14,17 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 
+import com.cherry.library.ui.view.CountDownView;
 import com.hele.hardware.analyser.BaseFragment;
 import com.hele.hardware.analyser.R;
 import com.hele.hardware.analyser.util.Utils;
+import com.ui.picker.TimePicker;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 
 import static com.hele.hardware.analyser.common.Constants.PERMISSION_REQUEST_CODE_CAMERA;
@@ -38,6 +43,11 @@ public class CaptureFragment extends BaseFragment implements CaptureContract.Vie
     ViewGroup pictureLayout;
     @BindView(R.id.stub_result)
     ViewStubCompat resultViewStub;
+    @BindView(R.id.count_down_view)
+    CountDownView countDownView;
+    @BindView(R.id.cb_alarm)
+    AppCompatCheckBox alarmCheckBox;
+
     StubViewHolder mStubHolder;
 
     @BindView(R.id.gl_surface)
@@ -45,6 +55,8 @@ public class CaptureFragment extends BaseFragment implements CaptureContract.Vie
     CaptureRenderer captureRenderer;
 
     private CaptureContract.Presenter mPresenter;
+
+    private TimePicker timePicker;
 
     @Nullable
     @Override
@@ -60,6 +72,7 @@ public class CaptureFragment extends BaseFragment implements CaptureContract.Vie
     }
 
     void init() {
+        alarmCheckBox.setChecked(false);
         captureRenderer = new CaptureRenderer(getContext(), glSurfaceView);
         new CapturePresenter(this, captureRenderer);
     }
@@ -73,6 +86,7 @@ public class CaptureFragment extends BaseFragment implements CaptureContract.Vie
             requestPermissions(new String[]{Manifest.permission.CAMERA},
                     PERMISSION_REQUEST_CODE_CAMERA);
         }
+        countDownView.resume();
 
     }
 
@@ -80,6 +94,7 @@ public class CaptureFragment extends BaseFragment implements CaptureContract.Vie
     public void onPause() {
         super.onPause();
         captureRenderer.pause();
+        countDownView.pause();
     }
 
     @Override
@@ -107,6 +122,16 @@ public class CaptureFragment extends BaseFragment implements CaptureContract.Vie
                 captureRenderer.setFilter(CaptureRenderer.STATE_CAPTURE);
                 updateController(true);
                 break;
+        }
+    }
+
+    @OnCheckedChanged(R.id.cb_alarm)
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if (isChecked) {
+            showTimePicker();
+        } else {
+            countDownView.setVisibility(View.GONE);
+            countDownView.stop();
         }
     }
 
@@ -169,6 +194,33 @@ public class CaptureFragment extends BaseFragment implements CaptureContract.Vie
                     getActivity().finish();
                 }
                 break;
+        }
+    }
+
+    private void showTimePicker() {
+        if (timePicker == null) {
+            timePicker = new TimePicker(getActivity(), TimePicker.HOUR_24);
+            timePicker.setRangeStart(0, 0);//00:00
+            timePicker.setRangeEnd(23, 59);//23:59
+            timePicker.setSelectedItem(0, 0);
+            timePicker.setTopLineVisible(false);
+            timePicker.setLineVisible(false);
+            timePicker.setOnTimePickListener(new TimePicker.OnTimePickListener() {
+                @Override
+                public void onTimePicked(String hour, String minute) {
+                    countDownView.setVisibility(View.VISIBLE);
+                    countDownView.setCountDownTime(Integer.valueOf(hour), Integer.valueOf(minute), 0);
+                    hideTimePicker();
+                    countDownView.start();
+                }
+            });
+        }
+        timePicker.show();
+    }
+
+    private void hideTimePicker() {
+        if (timePicker != null && timePicker.isShowing()) {
+            timePicker.dismiss();
         }
     }
 
