@@ -55,6 +55,8 @@ public class CountDownView extends View {
     private ValueAnimator mAnimator;
     private SimpleDateFormat mFormatter;
 
+    private Listener mListener;
+
     public CountDownView(Context context) {
         super(context);
         init();
@@ -132,6 +134,7 @@ public class CountDownView extends View {
 
     public void setCountDownTime(int hour, int minute, int second) {
         mTotalTime = hour * 60 * 60 + minute * 60 + second;
+        Log.d(TAG, "mTotalTime=" + mTotalTime);
     }
 
     public void start() {
@@ -153,6 +156,8 @@ public class CountDownView extends View {
                         if (mCurrentTime == 0) {
                             createAnimator();
                             mAnimator.start();
+                            if (mListener != null)
+                                mListener.onStart();
                         }
                     }
 
@@ -175,6 +180,8 @@ public class CountDownView extends View {
                     public void onComplete() {
                         Log.d(TAG, "onComplete");
                         postInvalidate();
+                        if (mListener != null)
+                            mListener.onComplete();
                     }
                 });
 
@@ -207,6 +214,10 @@ public class CountDownView extends View {
             mAnimator.resume();
     }
 
+    public void setListener(Listener l) {
+        mListener = l;
+    }
+
     private void createAnimator() {
         mAnimator = ValueAnimator.ofFloat(0, 1).setDuration(mTotalTime * 1000);
         mAnimator.setInterpolator(new LinearInterpolator());
@@ -218,5 +229,11 @@ public class CountDownView extends View {
                 postInvalidate();
             }
         });
+    }
+
+    public interface Listener {
+        void onStart();
+
+        void onComplete();
     }
 }

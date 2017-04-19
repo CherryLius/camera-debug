@@ -21,7 +21,7 @@ import android.widget.FrameLayout;
  * @param <V> 弹窗的内容视图类型
  */
 public abstract class BasicPopup<V extends View> implements DialogInterface.OnKeyListener,
-        DialogInterface.OnDismissListener {
+        DialogInterface.OnDismissListener, DialogInterface.OnCancelListener {
     public static final int MATCH_PARENT = ViewGroup.LayoutParams.MATCH_PARENT;
     public static final int WRAP_CONTENT = ViewGroup.LayoutParams.WRAP_CONTENT;
     protected Activity activity;
@@ -46,8 +46,11 @@ public abstract class BasicPopup<V extends View> implements DialogInterface.OnKe
         contentLayout.setFocusableInTouchMode(true);
         //contentLayout.setFitsSystemWindows(true);
         dialog = new Dialog(activity);
-        dialog.setCanceledOnTouchOutside(false);//触摸屏幕取消窗体
-        dialog.setCancelable(false);//按返回键取消窗体
+        //dialog.setCanceledOnTouchOutside(false);//触摸屏幕取消窗体
+        //dialog.setCancelable(false);//按返回键取消窗体
+        dialog.setCanceledOnTouchOutside(true);//触摸屏幕取消窗体
+        dialog.setCancelable(true);
+        dialog.setOnCancelListener(this);
         dialog.setOnKeyListener(this);
         dialog.setOnDismissListener(this);
         Window window = dialog.getWindow();
@@ -160,6 +163,16 @@ public abstract class BasicPopup<V extends View> implements DialogInterface.OnKe
             }
         });
         //LogUtils.verbose(this, "popup setOnKeyListener");
+    }
+
+    public void setOnCancelListener(final DialogInterface.OnCancelListener listener) {
+        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                BasicPopup.this.onCancel(dialog);
+                listener.onCancel(dialog);
+            }
+        });
     }
 
     /**
@@ -294,4 +307,12 @@ public abstract class BasicPopup<V extends View> implements DialogInterface.OnKe
         return contentLayout;
     }
 
+    @Override
+    public void onCancel(DialogInterface dialog) {
+        dismiss();
+    }
+
+    public void cancel() {
+        dialog.cancel();
+    }
 }

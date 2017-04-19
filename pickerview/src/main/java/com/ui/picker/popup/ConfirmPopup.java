@@ -308,7 +308,7 @@ public abstract class ConfirmPopup<V extends View> extends BasicPopup<View> {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dismiss();
+                cancel();
                 onCancel();
             }
         });

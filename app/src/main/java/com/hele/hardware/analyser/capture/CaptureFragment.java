@@ -1,6 +1,7 @@
 package com.hele.hardware.analyser.capture;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
@@ -74,6 +75,19 @@ public class CaptureFragment extends BaseFragment implements CaptureContract.Vie
     void init() {
         alarmCheckBox.setChecked(false);
         captureRenderer = new CaptureRenderer(getContext(), glSurfaceView);
+        countDownView.setListener(new CountDownView.Listener() {
+            @Override
+            public void onStart() {
+
+            }
+
+            @Override
+            public void onComplete() {
+                mPresenter.capture();
+                alarmCheckBox.setChecked(false);
+                countDownView.setVisibility(View.GONE);
+            }
+        });
         new CapturePresenter(this, captureRenderer);
     }
 
@@ -205,12 +219,18 @@ public class CaptureFragment extends BaseFragment implements CaptureContract.Vie
             timePicker.setSelectedItem(0, 0);
             timePicker.setTopLineVisible(false);
             timePicker.setLineVisible(false);
+            timePicker.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialog) {
+                    alarmCheckBox.setChecked(false);
+                }
+            });
             timePicker.setOnTimePickListener(new TimePicker.OnTimePickListener() {
                 @Override
                 public void onTimePicked(String hour, String minute) {
                     countDownView.setVisibility(View.VISIBLE);
-                    countDownView.setCountDownTime(Integer.valueOf(hour), Integer.valueOf(minute), 0);
                     hideTimePicker();
+                    countDownView.setCountDownTime(Integer.valueOf(hour), Integer.valueOf(minute), 0);
                     countDownView.start();
                 }
             });
