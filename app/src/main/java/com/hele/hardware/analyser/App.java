@@ -3,6 +3,7 @@ package com.hele.hardware.analyser;
 import android.app.Application;
 import android.content.Context;
 
+import com.hele.hardware.analyser.dao.DaoManager;
 import com.hele.hardware.analyser.util.CrashHandler;
 
 /**
@@ -19,6 +20,7 @@ public class App extends Application {
         if (sContext == null)
             sContext = this;
         CrashHandler.instance().init(this);
+        DaoManager.instance().init(this);
     }
 
     public static Context getContext() {

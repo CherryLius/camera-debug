@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/ic_orange_rect_bg"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp">
+
+    <!--<android.support.v7.widget.AppCompatImageView
+        android:id="@+id/iv_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_orange_rect_bg" />-->
+    <RelativeLayout
+        android:id="@+id/layout_0"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/iv_icon_0"
+            android:layout_width="@dimen/menu_icon_size"
+            android:layout_height="@dimen/menu_icon_size"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/ic_android_white_24dp" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tv_name_0"
+            style="@style/TextView.Menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/iv_icon_0"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:text="免疫检测" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/iv_icon_1"
+            android:layout_width="@dimen/menu_icon_size"
+            android:layout_height="@dimen/menu_icon_size"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/ic_android_white_24dp" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tv_name_1"
+            style="@style/TextView.Menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/iv_icon_1"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:text="结果查询" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_2"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/iv_icon_2"
+            android:layout_width="@dimen/menu_icon_size"
+            android:layout_height="@dimen/menu_icon_size"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/ic_android_white_24dp" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tv_name_2"
+            style="@style/TextView.Menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/iv_icon_2"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:text="更多" />
+    </RelativeLayout>
+
+</LinearLayout>

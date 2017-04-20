@@ -6,6 +6,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:listDivider">@drawable/list_divider</item>
     </style>
 
     <style name="AppTheme.NoActionBar" parent="AppTheme">
@@ -17,9 +18,20 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <!--TextView-->
     <style name="TextView" parent="TextAppearance.AppCompat.Medium">
         <item name="android:textColor">@color/colorPrimaryDark</item>
     </style>
 
-    <style name="Button" parent="TextAppearance.AppCompat.Medium"></style>
+    <style name="TextView.Menu">
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:typeface">sans</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
+    <!--Button-->
+    <style name="Button" parent="TextAppearance.AppCompat.Medium" />
 </resources>

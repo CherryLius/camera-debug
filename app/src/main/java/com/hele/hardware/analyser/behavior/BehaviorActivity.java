@@ -36,7 +36,7 @@ public class BehaviorActivity extends AppCompatActivity implements AdapterView.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_behavior);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         BehaviorFragment fragment = new BehaviorFragment();
