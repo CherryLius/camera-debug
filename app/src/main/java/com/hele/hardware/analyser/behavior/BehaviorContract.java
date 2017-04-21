@@ -23,5 +23,7 @@ public interface BehaviorContract {
         void parseList(Context context);
 
         void loadSteps();
+
+        void updateStepState(int position);
     }
 }

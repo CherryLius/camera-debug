@@ -20,6 +20,7 @@ import android.widget.CompoundButton;
 import com.cherry.library.ui.view.CountDownView;
 import com.hele.hardware.analyser.BaseFragment;
 import com.hele.hardware.analyser.R;
+import com.hele.hardware.analyser.util.HLog;
 import com.hele.hardware.analyser.util.Utils;
 import com.ui.picker.TimePicker;
 
@@ -59,6 +60,9 @@ public class CaptureFragment extends BaseFragment implements CaptureContract.Vie
 
     private TimePicker timePicker;
 
+    private int mHour;
+    private int mMinute;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -69,6 +73,11 @@ public class CaptureFragment extends BaseFragment implements CaptureContract.Vie
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
+        if (getArguments() != null) {
+            mHour = Integer.valueOf(getArguments().getString("hour", "0"));
+            mMinute = Integer.valueOf(getArguments().getString("minute", "0"));
+            HLog.e(TAG, "mHour=" + mHour + ",mMinute=" + mMinute);
+        }
         init();
     }
 
@@ -89,6 +98,11 @@ public class CaptureFragment extends BaseFragment implements CaptureContract.Vie
             }
         });
         new CapturePresenter(this, captureRenderer);
+        if (mHour != 0 || mMinute != 0) {
+            countDownView.setVisibility(View.VISIBLE);
+            countDownView.setCountDownTime(mHour, mMinute, 0);
+            countDownView.start();
+        }
     }
 
     @Override

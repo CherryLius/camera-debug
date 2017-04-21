@@ -5,9 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 
 import com.hele.hardware.analyser.BaseFragment;
 import com.hele.hardware.analyser.LifecycleCallback;
@@ -23,7 +21,7 @@ import org.opencv.android.OpenCVLoader;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class BehaviorActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, LifecycleCallback {
+public class BehaviorActivity extends AppCompatActivity implements BehaviorFragment.BehaviorListener, LifecycleCallback {
 
     private static final String TAG = "BehaviorActivity";
 
@@ -64,18 +62,13 @@ public class BehaviorActivity extends AppCompatActivity implements AdapterView.O
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        replaceFragment(getFragment(position));
-    }
-
-    @Override
     public void onAttachActivity(Fragment fragment) {
         setupWindow();
     }
 
     @Override
     public void onDetachActivity(Fragment fragment) {
-        displayWindow();
+        //displayWindow();
     }
 
     @Override
@@ -86,34 +79,6 @@ public class BehaviorActivity extends AppCompatActivity implements AdapterView.O
                 return;
         }
         super.onBackPressed();
-    }
-
-    private Fragment getFragment(int position) {
-        if (mCacheFragments.containsKey(position)) {
-            return mCacheFragments.get(position);
-        }
-        Fragment fragment = null;
-        switch (position) {
-            case 0:
-                fragment = new CaptureFragment();
-                break;
-            default:
-                Utils.showToastOnUiThread(this, "Not Impl");
-                break;
-        }
-        if (fragment != null)
-            mCacheFragments.put(position, fragment);
-        return fragment;
-    }
-
-    private void replaceFragment(Fragment fragment) {
-        if (fragment != null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, fragment)
-                    .addToBackStack(null)
-                    .commit();
-            mFragment = fragment;
-        }
     }
 
     private void setupWindow() {
@@ -143,4 +108,39 @@ public class BehaviorActivity extends AppCompatActivity implements AdapterView.O
 
         }
     };
+
+    @Override
+    public void onBehavior(Bundle arguments) {
+        Fragment fragment = getFragment(0);
+        fragment.setArguments(arguments);
+        replaceFragment(fragment);
+    }
+
+    private Fragment getFragment(int position) {
+        if (mCacheFragments.containsKey(position)) {
+            return mCacheFragments.get(position);
+        }
+        Fragment fragment = null;
+        switch (position) {
+            case 0:
+                fragment = new CaptureFragment();
+                break;
+            default:
+                Utils.showToastOnUiThread(this, "Not Impl");
+                break;
+        }
+        if (fragment != null)
+            mCacheFragments.put(position, fragment);
+        return fragment;
+    }
+
+    private void replaceFragment(Fragment fragment) {
+        if (fragment != null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .addToBackStack(null)
+                    .commit();
+            mFragment = fragment;
+        }
+    }
 }

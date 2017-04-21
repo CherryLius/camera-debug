@@ -16,6 +16,7 @@ import java.util.List;
 public class BehaviorPresenter implements BehaviorContract.Presenter {
 
     private BehaviorContract.View mView;
+    private List<DotItem> mItemList;
 
     public BehaviorPresenter(@NonNull BehaviorContract.View mainView) {
         mView = mainView;
@@ -32,29 +33,40 @@ public class BehaviorPresenter implements BehaviorContract.Presenter {
 
     @Override
     public void loadSteps() {
-        List<DotItem> items = new ArrayList<>(5);
+        mItemList = new ArrayList<>(5);
 
         DotItem item = new DotItem();
         item.setTitle("试纸板摆放");
         item.setSelected(true);
-        items.add(item);
+        mItemList.add(item);
 
         item = new DotItem();
         item.setTitle("时间设定");
-        items.add(item);
+        mItemList.add(item);
 
         item = new DotItem();
         item.setTitle("拍照显示");
-        items.add(item);
+        mItemList.add(item);
 
         item = new DotItem();
         item.setTitle("图片解析");
-        items.add(item);
+        mItemList.add(item);
 
         item = new DotItem();
         item.setTitle("结果");
-        items.add(item);
+        mItemList.add(item);
 
-        mView.showSteps(items);
+        mView.showSteps(mItemList);
+    }
+
+    @Override
+    public void updateStepState(int position) {
+        if (mItemList == null) return;
+        if (position < 0 || position > mItemList.size() - 1) {
+            return;
+        }
+        DotItem item = mItemList.get(position + 1);
+        item.setSelected(true);
+        mView.showSteps(mItemList);
     }
 }
