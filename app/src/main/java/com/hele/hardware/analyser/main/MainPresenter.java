@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 
 import com.hele.hardware.analyser.behavior.BehaviorActivity;
 import com.hele.hardware.analyser.model.CardItem;
+import com.hele.hardware.analyser.result.ResultListActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +55,8 @@ public class MainPresenter implements MainContract.Presenter {
 
     @Override
     public void gotoQuery() {
-
+        Intent intent = new Intent(mContext, ResultListActivity.class);
+        mContext.startActivity(intent);
     }
 
     @Override

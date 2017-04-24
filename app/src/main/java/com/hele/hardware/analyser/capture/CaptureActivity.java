@@ -1,6 +1,5 @@
-package com.hele.hardware.analyser.behavior;
+package com.hele.hardware.analyser.capture;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -9,15 +8,14 @@ import android.view.WindowManager;
 
 import com.hele.hardware.analyser.BaseFragment;
 import com.hele.hardware.analyser.R;
-import com.hele.hardware.analyser.capture.CaptureActivity;
+import com.hele.hardware.analyser.result.ResultActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class BehaviorActivity extends AppCompatActivity implements BehaviorFragment.BehaviorListener {
+public class CaptureActivity extends AppCompatActivity implements CaptureFragment.CaptureListener {
 
-    private static final String TAG = "BehaviorActivity";
-
+    private static final String TAG = "CaptureActivity";
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
@@ -26,18 +24,26 @@ public class BehaviorActivity extends AppCompatActivity implements BehaviorFragm
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_behavior);
+        setContentView(R.layout.activity_capture);
         ButterKnife.bind(this);
-
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setSupportActionBar(toolbar);
         getSupportActionBar().hide();
 
-        BehaviorFragment fragment = new BehaviorFragment();
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.fragment_container, fragment)
-                .commit();
-        mFragment = fragment;
+        init();
+    }
+
+
+    void init() {
+        CaptureFragment cf = new CaptureFragment();
+        cf.setCaptureListener(this);
+        mFragment = cf;
+        if (getIntent() != null) {
+            Bundle args = getIntent().getBundleExtra("arguments");
+            mFragment.setArguments(args);
+        }
+        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, mFragment).commit();
     }
 
     @Override
@@ -51,11 +57,8 @@ public class BehaviorActivity extends AppCompatActivity implements BehaviorFragm
     }
 
     @Override
-    public void onBehavior(Bundle arguments) {
-        Intent intent = new Intent(this, CaptureActivity.class);
-        intent.putExtra("arguments", arguments);
-        startActivity(intent);
-//        ResultActivity.toActivity(this, "");
+    public void onAnalyse(String path) {
+        ResultActivity.toActivity(this, path);
         finish();
     }
 }

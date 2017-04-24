@@ -57,6 +57,8 @@ public class CaptureFragment extends BaseFragment implements CaptureContract.Vie
     CaptureRenderer captureRenderer;
 
     private CaptureContract.Presenter mPresenter;
+    private CaptureListener mListener;
+    private String mFilePath;
 
     private TimePicker timePicker;
 
@@ -140,13 +142,16 @@ public class CaptureFragment extends BaseFragment implements CaptureContract.Vie
                 showToast("not impl!");
                 break;
             case R.id.iv_analyse:
-                if (mStubHolder == null) {
-                    mStubHolder = new StubViewHolder(resultViewStub.inflate());
-                } else {
-                    mStubHolder.show();
-                }
+//                if (mStubHolder == null) {
+//                    mStubHolder = new StubViewHolder(resultViewStub.inflate());
+//                } else {
+//                    mStubHolder.show();
+//                }
+                if (mListener != null)
+                    mListener.onAnalyse(mFilePath);
                 break;
             case R.id.iv_cancel:
+                mFilePath = null;
                 captureRenderer.setFilter(CaptureRenderer.STATE_CAPTURE);
                 updateController(true);
                 break;
@@ -169,7 +174,8 @@ public class CaptureFragment extends BaseFragment implements CaptureContract.Vie
     }
 
     @Override
-    public void showBitmap(final Bitmap bitmap) {
+    public void showBitmap(final Bitmap bitmap, final String path) {
+        mFilePath = path;
         captureRenderer.setBitmap(bitmap);
         captureRenderer.setFilter(CaptureRenderer.STATE_PICTURE);
     }
@@ -256,6 +262,14 @@ public class CaptureFragment extends BaseFragment implements CaptureContract.Vie
         if (timePicker != null && timePicker.isShowing()) {
             timePicker.dismiss();
         }
+    }
+
+    public void setCaptureListener(CaptureListener listener) {
+        mListener = listener;
+    }
+
+    public interface CaptureListener {
+        void onAnalyse(String path);
     }
 
     class StubViewHolder {

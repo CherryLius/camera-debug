@@ -34,7 +34,7 @@ public class CapturePresenter implements CaptureContract.Presenter, CameraCallba
     @Override
     public void onPictureSaved(Bitmap bitmap, String filePath) {
         mView.showToast(filePath);
-        mView.showBitmap(bitmap);
+        mView.showBitmap(bitmap, filePath);
         mView.updateController(false);
     }
 

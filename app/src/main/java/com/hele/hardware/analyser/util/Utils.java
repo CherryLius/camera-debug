@@ -11,11 +11,22 @@ import android.util.DisplayMetrics;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import java.util.Random;
+
 /**
  * Created by Administrator on 2017/4/6.
  */
 
 public class Utils {
+
+    private static final char[] CHARACTER = {
+            'a', 'b', 'c', 'd', 'e', 'f', 'g',
+            'h', 'i', 'j', 'k', 'l', 'm', 'n',
+            'o', 'p', 'q', 'r', 's', 't',
+            'u', 'v', 'w', 'x', 'y', 'x'};
+    private static final int[] NUMBER = {
+            0, 1, 2, 3, 4, 5, 6, 7, 8, 9
+    };
 
     @NonNull
     public static <T> T getSystemService(Context context, @NonNull String serviceName) {
@@ -74,5 +85,27 @@ public class Utils {
     public static boolean isApkDebuggable(Context context) {
         ApplicationInfo appInfo = context.getApplicationInfo();
         return (appInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
+    }
+
+    public static String getRandomString() {
+        Random random = new Random();
+        int length = random.nextInt(6) + 1;
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            int index = random.nextInt(CHARACTER.length);
+            sb.append(CHARACTER[index]);
+        }
+        return sb.toString();
+    }
+
+    public static long getRandomNumber() {
+        Random random = new Random();
+        int length = random.nextInt(6) + 1;
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            int index = random.nextInt(NUMBER.length);
+            sb.append(NUMBER[index]);
+        }
+        return Long.valueOf(sb.toString());
     }
 }

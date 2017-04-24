@@ -117,13 +117,12 @@ public class OpenCVUtil {
         return hist;
     }
 
-
     /**
      * 裁切试纸板得到浓度区域
      *
      * @param path
      */
-    public static void clipTestPaper(String path) {
+    public static float[] clipTestPaper(String path) {
         List<MatOfPoint> points = new ArrayList<>();
         Mat img = rgb2gray(path);
         Mat dst = new Mat();
@@ -153,6 +152,10 @@ public class OpenCVUtil {
             img = new Mat(img, rect);
         }
 
+        return calcGrayLevel(img);
+    }
+
+    private static float[] calcGrayLevel(Mat img) {
         //计算灰度值
         float[] buffer = new float[256];
         Mat hist = calcHist(img, 256, buffer);
@@ -214,6 +217,7 @@ public class OpenCVUtil {
         for (int i = 0; i < weights.length; i++) {
             HLog.e(TAG, "weight=" + weights[i] + ",val=" + weightValues[i]);
         }
+        return weights;
     }
 
 }

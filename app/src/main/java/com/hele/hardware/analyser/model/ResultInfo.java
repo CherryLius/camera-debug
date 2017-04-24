@@ -14,6 +14,7 @@ public class ResultInfo {
     private long identity;
     private String name;
     private String picturePath;
+    private String value;
     private Long dateTime;
 
     public Long getDateTime() {
@@ -56,13 +57,22 @@ public class ResultInfo {
         this.id = id;
     }
 
-    @Generated(hash = 1529233467)
+    public String getValue() {
+        return this.value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    @Generated(hash = 129481143)
     public ResultInfo(Long id, long identity, String name, String picturePath,
-                      Long dateTime) {
+            String value, Long dateTime) {
         this.id = id;
         this.identity = identity;
         this.name = name;
         this.picturePath = picturePath;
+        this.value = value;
         this.dateTime = dateTime;
     }
 

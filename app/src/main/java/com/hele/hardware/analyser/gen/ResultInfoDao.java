@@ -28,7 +28,8 @@ public class ResultInfoDao extends AbstractDao<ResultInfo, Long> {
         public final static Property Identity = new Property(1, long.class, "identity", false, "IDENTITY");
         public final static Property Name = new Property(2, String.class, "name", false, "NAME");
         public final static Property PicturePath = new Property(3, String.class, "picturePath", false, "PICTURE_PATH");
-        public final static Property DateTime = new Property(4, Long.class, "dateTime", false, "DATE_TIME");
+        public final static Property Value = new Property(4, String.class, "value", false, "VALUE");
+        public final static Property DateTime = new Property(5, Long.class, "dateTime", false, "DATE_TIME");
     }
 
 
@@ -48,7 +49,8 @@ public class ResultInfoDao extends AbstractDao<ResultInfo, Long> {
                 "\"IDENTITY\" INTEGER NOT NULL ," + // 1: identity
                 "\"NAME\" TEXT," + // 2: name
                 "\"PICTURE_PATH\" TEXT," + // 3: picturePath
-                "\"DATE_TIME\" INTEGER);"); // 4: dateTime
+                "\"VALUE\" TEXT," + // 4: value
+                "\"DATE_TIME\" INTEGER);"); // 5: dateTime
     }
 
     /** Drops the underlying database table. */
@@ -77,9 +79,14 @@ public class ResultInfoDao extends AbstractDao<ResultInfo, Long> {
             stmt.bindString(4, picturePath);
         }
  
+        String value = entity.getValue();
+        if (value != null) {
+            stmt.bindString(5, value);
+        }
+ 
         Long dateTime = entity.getDateTime();
         if (dateTime != null) {
-            stmt.bindLong(5, dateTime);
+            stmt.bindLong(6, dateTime);
         }
     }
 
@@ -103,9 +110,14 @@ public class ResultInfoDao extends AbstractDao<ResultInfo, Long> {
             stmt.bindString(4, picturePath);
         }
  
+        String value = entity.getValue();
+        if (value != null) {
+            stmt.bindString(5, value);
+        }
+ 
         Long dateTime = entity.getDateTime();
         if (dateTime != null) {
-            stmt.bindLong(5, dateTime);
+            stmt.bindLong(6, dateTime);
         }
     }
 
@@ -121,7 +133,8 @@ public class ResultInfoDao extends AbstractDao<ResultInfo, Long> {
             cursor.getLong(offset + 1), // identity
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // name
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // picturePath
-            cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4) // dateTime
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // value
+            cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5) // dateTime
         );
         return entity;
     }
@@ -132,7 +145,8 @@ public class ResultInfoDao extends AbstractDao<ResultInfo, Long> {
         entity.setIdentity(cursor.getLong(offset + 1));
         entity.setName(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setPicturePath(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setDateTime(cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4));
+        entity.setValue(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setDateTime(cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5));
      }
     
     @Override
