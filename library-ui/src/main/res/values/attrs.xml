@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CountDownView">
+        <attr name="radius" format="dimension" />
+        <attr name="indicatorRadius" format="dimension" />
+        <attr name="strokeWidth" format="dimension" />
+        <attr name="circleColor" format="color" />
+        <attr name="textColor" format="color" />
+        <attr name="angle" format="float" />
+        <attr name="startAngle" format="float" />
+    </declare-styleable>
+</resources>

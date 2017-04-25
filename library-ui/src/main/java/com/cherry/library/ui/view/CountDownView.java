@@ -2,6 +2,7 @@ package com.cherry.library.ui.view;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -12,6 +13,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
+
+import com.cherry.library.ui.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -37,9 +40,11 @@ public class CountDownView extends View {
     private int mWidth, mHeight;
     private float mRadius;
     private float mIndicateRadius = 12;
-    private float mStrokeWidth = 8;
+    private int mStrokeWidth = 8;
     private float mStartAngle = 270;
     private float mAngle = 90;
+    private int mCircleColor = Color.RED;
+    private int mTextColor = Color.WHITE;
 
     private Paint mPaint;
     private TextPaint mTextPaint;
@@ -58,34 +63,50 @@ public class CountDownView extends View {
     private Listener mListener;
 
     public CountDownView(Context context) {
-        super(context);
-        init();
+        this(context, null);
     }
 
     public CountDownView(Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        init();
+        this(context, attrs, 0);
     }
 
     public CountDownView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.CountDownView);
+        if (ta != null) {
+            mStrokeWidth = ta.getDimensionPixelOffset(R.styleable.CountDownView_strokeWidth, mStrokeWidth);
+            mCircleColor = ta.getColor(R.styleable.CountDownView_circleColor, mCircleColor);
+            mTextColor = ta.getColor(R.styleable.CountDownView_textColor, mTextColor);
+            mStartAngle = ta.getFloat(R.styleable.CountDownView_startAngle, mStartAngle);
+            mAngle = ta.getFloat(R.styleable.CountDownView_angle, mAngle);
+            mRadius = ta.getDimensionPixelOffset(R.styleable.CountDownView_radius, 0);
+            mIndicateRadius = ta.getDimension(R.styleable.CountDownView_indicatorRadius, mIndicateRadius);
+            ta.recycle();
+        }
         init();
     }
 
     private void init() {
-        mStrokeWidth = 8;
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG
                 | Paint.DITHER_FLAG
                 | Paint.FILTER_BITMAP_FLAG);
         mPaint.setStrokeWidth(mStrokeWidth);
+        mPaint.setColor(mCircleColor);
         mTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
         mTextPaint.density = getResources().getDisplayMetrics().density;
         mTextPaint.setTextAlign(Paint.Align.CENTER);
-        mTextPaint.setColor(Color.WHITE);
+        mTextPaint.setColor(mTextColor);
         mTimeString = "";
         mOval = new RectF();
         mFormatter = new SimpleDateFormat("HH:mm:ss");
         mFormatter.setTimeZone(TimeZone.getTimeZone("GMT"));
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int width = getDefaultSize((int) (mRadius * 1.2f), widthMeasureSpec);
+        int height = getDefaultSize((int) (mRadius * 1.2f), heightMeasureSpec);
+        setMeasuredDimension(width, height);
     }
 
     @Override
@@ -114,7 +135,7 @@ public class CountDownView extends View {
         mPaint.setColor(Color.WHITE);
         canvas.drawCircle(centerW, centerH, mRadius, mPaint);
 
-        mPaint.setColor(Color.RED);
+        mPaint.setColor(mCircleColor);
 
         canvas.drawArc(mOval, mStartAngle, -mAngle, false, mPaint);
 

@@ -12,6 +12,8 @@ import com.hele.hardware.analyser.App;
 import com.hele.hardware.analyser.R;
 import com.hele.hardware.analyser.model.ResultInfo;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -24,9 +26,10 @@ import butterknife.ButterKnife;
 public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ResultHolder> {
 
     private List<ResultInfo> mResults;
+    private SimpleDateFormat mFormatter;
 
     public ResultAdapter() {
-
+        mFormatter = new SimpleDateFormat("yyyyMMdd hh:mm:ss");
     }
 
     @Override
@@ -39,7 +42,9 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ResultHold
     public void onBindViewHolder(ResultHolder holder, int position) {
         ResultInfo info = mResults.get(position);
         Glide.with(App.getContext()).load(info.getPicturePath()).into(holder.imageView);
-        holder.textView.setText(info.getValue());
+        holder.valueView.setText(info.getValue());
+        holder.nameView.setText(info.getName());
+        holder.dateView.setText(mFormatter.format(new Date(info.getDateTime())));
     }
 
     @Override
@@ -56,7 +61,12 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ResultHold
         @BindView(R.id.iv_icon)
         AppCompatImageView imageView;
         @BindView(R.id.tv_description)
-        AppCompatTextView textView;
+        AppCompatTextView valueView;
+        @BindView(R.id.tv_name)
+        AppCompatTextView nameView;
+        @BindView(R.id.tv_date)
+        AppCompatTextView dateView;
+
 
         public ResultHolder(View itemView) {
             super(itemView);

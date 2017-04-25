@@ -55,7 +55,7 @@ public class BehaviorActivity extends AppCompatActivity implements BehaviorFragm
         Intent intent = new Intent(this, CaptureActivity.class);
         intent.putExtra("arguments", arguments);
         startActivity(intent);
-//        ResultActivity.toActivity(this, "");
+        //ResultActivity.toActivity(this, "");
         finish();
     }
 }

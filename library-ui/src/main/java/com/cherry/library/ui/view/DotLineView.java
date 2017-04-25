@@ -15,9 +15,6 @@ import android.view.View;
 public class DotLineView extends View {
 
     private int mDotRadius;
-    private int mLineWidth;
-    private int mLineHeight;
-
     private boolean mSelected;
 
     private int mSelectedColor;
@@ -46,8 +43,6 @@ public class DotLineView extends View {
     private void init() {
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
         mDotRadius = 10;
-        mLineWidth = 3;
-        mLineHeight = 15;
         mSelectedColor = Color.RED;
         mSelected = true;
     }

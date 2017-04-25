@@ -146,7 +146,7 @@ public class OpenCVUtil {
         if (rect != null) {
             rect = new Rect(rect.x + (int) (rect.width * 0.1f),
                     rect.y + (int) (rect.height * 0.15f),
-                    (int) (rect.width * 0.8f),
+                    (int) (rect.width * 0.85f),
                     (int) (rect.height * 0.7f));
             //dst = new Mat(dst, rect);
             img = new Mat(img, rect);
@@ -194,7 +194,7 @@ public class OpenCVUtil {
             HLog.e(TAG, "avg[" + i + "]=" + avg[i]);
         }
 
-        int wSize = 20;
+        int wSize = 15;
         float[] weightValues = new float[4];
         float[] weights = new float[4];
         for (int i = 0; i < 4; i++) {
