@@ -29,7 +29,7 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ResultHold
     private SimpleDateFormat mFormatter;
 
     public ResultAdapter() {
-        mFormatter = new SimpleDateFormat("yyyyMMdd hh:mm:ss");
+        mFormatter = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
     }
 
     @Override

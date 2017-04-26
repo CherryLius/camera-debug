@@ -14,7 +14,7 @@ public interface CaptureContract {
     interface View extends BaseView<Presenter> {
         void showToast(String text);
 
-        void showBitmap(Bitmap bitmap, String path);
+        void showBitmap(Bitmap bitmap);
 
         void updateController(boolean isInCapture);
 
@@ -23,5 +23,13 @@ public interface CaptureContract {
 
     interface Presenter extends BasePresenter {
         void capture();
+
+        void savePicture();
+
+        void setCaptureListener(CaptureListener listener);
+    }
+
+    interface CaptureListener {
+        void onAnalyse(String path);
     }
 }

@@ -11,7 +11,7 @@ import android.os.HandlerThread;
  */
 
 public class CameraCompact {
-    private Function mFunction;
+    private IFunction mFunction;
     private HandlerThread mBackgroundThread;
     private Handler mBackgroundHandler;
 
@@ -47,7 +47,7 @@ public class CameraCompact {
         mFunction.startPreview();
     }
 
-    public void setCallback(CameraCallback callback) {
+    public void setCallback(ICameraCallback callback) {
         mFunction.setCameraCallback(callback);
     }
 
@@ -57,6 +57,10 @@ public class CameraCompact {
 
     public boolean isFrontCamera() {
         return mFunction.isFrontCamera();
+    }
+
+    public IFunction getFunction() {
+        return mFunction;
     }
 
     private void startBackgroundThread() {

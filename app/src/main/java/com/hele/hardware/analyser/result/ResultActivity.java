@@ -13,6 +13,8 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.hele.hardware.analyser.R;
@@ -41,6 +43,10 @@ public class ResultActivity extends AppCompatActivity implements ResultContract.
     AppCompatTextView resultTextView;
     @BindView(R.id.iv_result)
     AppCompatImageView resultImageView;
+    @BindView(R.id.layout_result)
+    LinearLayout resultLayout;
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
 
     private ResultContract.Presenter mPresenter;
     private String mPath;
@@ -57,6 +63,8 @@ public class ResultActivity extends AppCompatActivity implements ResultContract.
         new ResultPresenter(this);
         setSupportActionBar(toolbar);
         resultTextView.setMovementMethod(ScrollingMovementMethod.getInstance());
+        progressBar.setVisibility(View.VISIBLE);
+        resultLayout.setVisibility(View.GONE);
 
         mPresenter.setup();
         if (getIntent() != null) {
@@ -90,6 +98,8 @@ public class ResultActivity extends AppCompatActivity implements ResultContract.
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                progressBar.setVisibility(View.GONE);
+                resultLayout.setVisibility(View.VISIBLE);
                 resultTextView.setText(result);
             }
         });

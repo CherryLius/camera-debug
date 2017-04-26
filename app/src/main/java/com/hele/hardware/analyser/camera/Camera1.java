@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
-import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.util.Size;
@@ -18,7 +17,7 @@ import java.util.List;
  * Created by Administrator on 2017/4/6.
  */
 
-public class Camera1 implements Function {
+public class Camera1 implements IFunction {
     private static final String TAG = "Camera1";
 
     private Context mContext;
@@ -30,14 +29,12 @@ public class Camera1 implements Function {
     private SurfaceTexture mSurfaceTexture;
 
     private Handler mBackgroundHandler;
-    private String mFilePath;
-    private CameraCallback mCallback;
+    private ICameraCallback mCallback;
 
     public Camera1(Context context) {
         mContext = context;
         mCameraInfo = new Camera.CameraInfo();
         mCameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
-        mFilePath = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES).getAbsolutePath();
     }
 
 
@@ -76,7 +73,8 @@ public class Camera1 implements Function {
             @Override
             public void onPictureTaken(byte[] data, Camera camera) {
                 stopPreview();
-                mBackgroundHandler.post(new ImageSaver(mContext, data, mFilePath, Camera1.this));
+                //mBackgroundHandler.post(new ImageSaver(mContext, data, Camera1.this));
+                ImageManager.instance().execute(data, Camera1.this);
                 //startPreview();
             }
         });
@@ -111,12 +109,12 @@ public class Camera1 implements Function {
     }
 
     @Override
-    public void setCameraCallback(CameraCallback cb) {
+    public void setCameraCallback(ICameraCallback cb) {
         mCallback = cb;
     }
 
     @Override
-    public CameraCallback getCameraCallback() {
+    public ICameraCallback getCameraCallback() {
         return mCallback;
     }
 

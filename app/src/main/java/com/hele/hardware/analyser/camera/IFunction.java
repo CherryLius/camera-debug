@@ -7,7 +7,7 @@ import android.os.Handler;
  * Created by Administrator on 2017/4/6.
  */
 
-public interface Function {
+public interface IFunction {
     void openCamera(Handler handler);
 
     void closeCamera();
@@ -24,7 +24,7 @@ public interface Function {
 
     boolean isFrontCamera();
 
-    void setCameraCallback(CameraCallback cb);
+    void setCameraCallback(ICameraCallback cb);
 
-    CameraCallback getCameraCallback();
+    ICameraCallback getCameraCallback();
 }

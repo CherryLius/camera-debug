@@ -13,7 +13,7 @@ import com.hele.hardware.analyser.result.ResultActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class CaptureActivity extends AppCompatActivity implements CaptureFragment.CaptureListener {
+public class CaptureActivity extends AppCompatActivity implements CaptureContract.CaptureListener {
 
     private static final String TAG = "CaptureActivity";
     @BindView(R.id.toolbar)

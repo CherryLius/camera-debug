@@ -14,7 +14,6 @@ import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.ImageReader;
-import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -32,7 +31,7 @@ import java.util.Arrays;
  * Created by Administrator on 2017/4/6.
  */
 
-public class Camera2 extends CameraDevice.StateCallback implements Function, ImageReader.OnImageAvailableListener {
+public class Camera2 extends CameraDevice.StateCallback implements IFunction, ImageReader.OnImageAvailableListener {
     private static final String TAG = "Camera2";
 
     /**
@@ -59,16 +58,13 @@ public class Camera2 extends CameraDevice.StateCallback implements Function, Ima
 
     private Surface mSurface;
     private Handler mBackgroundHandler;
-    private CameraCallback mCallback;
-
-    private String mFilePath;
+    private ICameraCallback mCallback;
 
     public Camera2(Context context) {
         mContext = context;
         mCameraManager = Utils.getSystemService(context, Context.CAMERA_SERVICE);
 //        mCameraId = CameraCharacteristics.LENS_FACING_BACK;
         mCameraId = CameraCharacteristics.LENS_FACING_FRONT;
-        mFilePath = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES).getAbsolutePath();
     }
 
     @Override
@@ -226,19 +222,20 @@ public class Camera2 extends CameraDevice.StateCallback implements Function, Ima
     }
 
     @Override
-    public void setCameraCallback(CameraCallback cb) {
+    public void setCameraCallback(ICameraCallback cb) {
         mCallback = cb;
     }
 
     @Override
-    public CameraCallback getCameraCallback() {
+    public ICameraCallback getCameraCallback() {
         return mCallback;
     }
 
     @Override
     public void onImageAvailable(ImageReader reader) {
         stopPreview();
-        mBackgroundHandler.post(new ImageSaver(mContext, reader.acquireNextImage(), mFilePath, this));
+        //mBackgroundHandler.post(new ImageSaver(mContext, reader.acquireNextImage(), this));
+        ImageManager.instance().execute(reader.acquireNextImage(), this);
     }
 
     @Override

@@ -57,13 +57,17 @@ public class CaptureFragment extends BaseFragment implements CaptureContract.Vie
     CaptureRenderer captureRenderer;
 
     private CaptureContract.Presenter mPresenter;
-    private CaptureListener mListener;
-    private String mFilePath;
+    private CaptureContract.CaptureListener mListener;
 
     private TimePicker timePicker;
 
     private int mHour;
     private int mMinute;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @Nullable
     @Override
@@ -130,6 +134,7 @@ public class CaptureFragment extends BaseFragment implements CaptureContract.Vie
     @Override
     public void setPresenter(@NonNull CaptureContract.Presenter presenter) {
         mPresenter = presenter;
+        mPresenter.setCaptureListener(mListener);
     }
 
     @OnClick({R.id.iv_capture, R.id.iv_switch, R.id.iv_analyse, R.id.iv_cancel})
@@ -147,11 +152,9 @@ public class CaptureFragment extends BaseFragment implements CaptureContract.Vie
 //                } else {
 //                    mStubHolder.show();
 //                }
-                if (mListener != null)
-                    mListener.onAnalyse(mFilePath);
+                mPresenter.savePicture();
                 break;
             case R.id.iv_cancel:
-                mFilePath = null;
                 captureRenderer.setFilter(CaptureRenderer.STATE_CAPTURE);
                 updateController(true);
                 break;
@@ -174,8 +177,7 @@ public class CaptureFragment extends BaseFragment implements CaptureContract.Vie
     }
 
     @Override
-    public void showBitmap(final Bitmap bitmap, final String path) {
-        mFilePath = path;
+    public void showBitmap(final Bitmap bitmap) {
         captureRenderer.setBitmap(bitmap);
         captureRenderer.setFilter(CaptureRenderer.STATE_PICTURE);
     }
@@ -231,6 +233,13 @@ public class CaptureFragment extends BaseFragment implements CaptureContract.Vie
         }
     }
 
+    public void setCaptureListener(CaptureContract.CaptureListener listener) {
+        mListener = listener;
+        if (mPresenter != null)
+            mPresenter.setCaptureListener(listener);
+    }
+
+
     private void showTimePicker() {
         if (timePicker == null) {
             timePicker = new TimePicker(getActivity(), TimePicker.HOUR_24);
@@ -262,14 +271,6 @@ public class CaptureFragment extends BaseFragment implements CaptureContract.Vie
         if (timePicker != null && timePicker.isShowing()) {
             timePicker.dismiss();
         }
-    }
-
-    public void setCaptureListener(CaptureListener listener) {
-        mListener = listener;
-    }
-
-    public interface CaptureListener {
-        void onAnalyse(String path);
     }
 
     class StubViewHolder {

@@ -3,17 +3,22 @@ package com.hele.hardware.analyser.capture;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 
-import com.hele.hardware.analyser.camera.CameraCallback;
+import com.hele.hardware.analyser.camera.ICameraCallback;
 import com.hele.hardware.analyser.camera.CameraCompact;
+import com.hele.hardware.analyser.camera.ImageManager;
 
 /**
  * Created by Administrator on 2017/4/7.
  */
 
-public class CapturePresenter implements CaptureContract.Presenter, CameraCallback, CaptureRenderer.OnFilterChangeListener {
+public class CapturePresenter implements CaptureContract.Presenter, ICameraCallback, CaptureRenderer.OnFilterChangeListener {
 
     CaptureContract.View mView;
     CameraCompact mCameraCompact;
+
+    private CaptureContract.CaptureListener mListener;
+    private byte[] mLastData;
+    private Bitmap mLastBitmap;
 
     public CapturePresenter(@NonNull CaptureContract.View view, @NonNull CaptureRenderer renderer) {
         mView = view;
@@ -32,10 +37,30 @@ public class CapturePresenter implements CaptureContract.Presenter, CameraCallba
     }
 
     @Override
+    public void savePicture() {
+        ImageManager.instance().saveImage(mLastBitmap, mLastData, mCameraCompact.getFunction());
+    }
+
+    @Override
+    public void setCaptureListener(CaptureContract.CaptureListener listener) {
+        mListener = listener;
+    }
+
+    @Override
+    public void onCaptured(Bitmap bitmap, byte[] data) {
+        mView.showBitmap(bitmap);
+        mView.updateController(false);
+        if (bitmap != mLastBitmap)
+            mLastBitmap = bitmap;
+        if (data != mLastData)
+            mLastData = data;
+    }
+
+    @Override
     public void onPictureSaved(Bitmap bitmap, String filePath) {
         mView.showToast(filePath);
-        mView.showBitmap(bitmap, filePath);
-        mView.updateController(false);
+        if (mListener != null)
+            mListener.onAnalyse(filePath);
     }
 
     @Override
