@@ -7,13 +7,11 @@ import android.support.annotation.IdRes;
 import com.hele.hardware.analyser.util.HLog;
 
 import org.opencv.android.Utils;
-import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfFloat;
 import org.opencv.core.MatOfInt;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Rect;
-import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
@@ -111,9 +109,9 @@ public class OpenCVUtil {
     public static Mat calcHist(Mat src, int histSize, float[] buffer) {
         Mat hist = new Mat();
         Imgproc.calcHist(Arrays.asList(src), new MatOfInt(0), new Mat(), hist, new MatOfInt(histSize), new MatOfFloat(0, histSize));
-        Size sizeRgba = src.size();
-        Core.normalize(hist, hist, sizeRgba.height / 2, 0, Core.NORM_INF);
-        hist.get(0, 0, buffer);
+//        Size sizeRgba = src.size();
+//        Core.normalize(hist, hist, sizeRgba.height / 2, 0, Core.NORM_INF);
+//        hist.get(0, 0, buffer);
         return hist;
     }
 
@@ -175,14 +173,14 @@ public class OpenCVUtil {
         HLog.e(TAG, "maxColor=" + maxColor + ",index=" + maxIndex);
         HLog.e(TAG, "hist=" + hist.toString() + ",cols=" + hist.cols() + ",rows=" + hist.rows());
 
-        int bgValue = 255 - maxIndex;
+        int bgValue = (hist.rows()-1) - maxIndex;
 
         HLog.i(TAG, "img cols=" + img.cols() + ", rows=" + img.rows());
         float[] avg = new float[img.cols()];
         for (int i = 0; i < img.cols(); i++) {
             for (int j = 0; j < img.rows(); j++) {
                 double[] val = img.get(j, i);
-                avg[i] += (255 - val[0]);
+                avg[i] += ((hist.rows()-1) - val[0]);
             }
             avg[i] /= img.rows();
             HLog.i(TAG, "avg[" + i + "]=" + avg[i]);
