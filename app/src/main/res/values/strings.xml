@@ -20,4 +20,8 @@
     <string name="minute_second"><xliff:g id="minute">%1$d</xliff:g>分<xliff:g id="minute">%2$d</xliff:g>秒</string>
     <string name="second"><xliff:g id="minute">%1$d</xliff:g>秒</string>
 
+    <string name="label_name">姓名</string>
+    <string name="label_sex">性别</string>
+    <string name="label_age">年龄</string>
+
 </resources>

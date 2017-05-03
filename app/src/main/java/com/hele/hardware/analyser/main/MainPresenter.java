@@ -1,14 +1,13 @@
 package com.hele.hardware.analyser.main;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
 import com.hele.hardware.analyser.behavior.BehaviorActivity;
 import com.hele.hardware.analyser.model.CardItem;
-import com.hele.hardware.analyser.result.ResultActivity;
 import com.hele.hardware.analyser.result.ResultListActivity;
+import com.hele.hardware.analyser.user.info.UserInfoActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +62,8 @@ public class MainPresenter implements MainContract.Presenter {
 
     @Override
     public void gotoMore() {
-        ResultActivity.toActivity((Activity) mContext, "");
+        //ResultActivity.toActivity((Activity) mContext, "");
+        Intent intent = new Intent(mContext, UserInfoActivity.class);
+        mContext.startActivity(intent);
     }
 }

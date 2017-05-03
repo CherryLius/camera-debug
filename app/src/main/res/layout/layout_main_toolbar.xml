@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:background="@drawable/ic_white_rect_bg"
+        android:background="@drawable/ic_grey_rect_bg"
         android:focusable="false"
         android:hint="这是功能搜索框"
         android:maxLines="1"

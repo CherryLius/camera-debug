@@ -149,7 +149,6 @@ public class OpenCVUtil {
             //dst = new Mat(dst, rect);
             img = new Mat(img, rect);
         }
-
         return calcGrayLevel(img);
     }
 

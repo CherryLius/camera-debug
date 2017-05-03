@@ -89,7 +89,7 @@ public class Utils {
 
     public static String getRandomString() {
         Random random = new Random();
-        int length = random.nextInt(6) + 1;
+        int length = random.nextInt(6) + 4;
         StringBuilder sb = new StringBuilder(length);
         for (int i = 0; i < length; i++) {
             int index = random.nextInt(CHARACTER.length);
@@ -100,7 +100,7 @@ public class Utils {
 
     public static long getRandomNumber() {
         Random random = new Random();
-        int length = random.nextInt(6) + 1;
+        int length = random.nextInt(6) + 4;
         StringBuilder sb = new StringBuilder(length);
         for (int i = 0; i < length; i++) {
             int index = random.nextInt(NUMBER.length);

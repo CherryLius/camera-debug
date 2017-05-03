@@ -14,38 +14,22 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme.NoActionBar">
+        <activity android:name=".main.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".behavior.BehaviorActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
-
-            <!--
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            -->
-        </activity>
-        <activity
-            android:name=".main.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".capture.CaptureActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".result.ResultActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".result.ResultListActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:screenOrientation="portrait" />
+        <activity android:name=".capture.CaptureActivity" />
+        <activity android:name=".result.ResultActivity" />
+        <activity android:name=".result.ResultListActivity" />
+        <activity android:name=".user.info.UserInfoActivity" />
+        <activity android:name=".user.add.UserAddActivity" />
     </application>
 
 </manifest>
