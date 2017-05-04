@@ -121,7 +121,7 @@ public class ResultActivity extends AppCompatActivity implements ResultContract.
             case R.id.btn_save:
                 Toast.makeText(this, "save result", Toast.LENGTH_SHORT).show();
                 ResultInfo info = new ResultInfo();
-                info.setName(Utils.getRandomString());
+                info.setName(Utils.getRandomEnglish());
                 info.setIdentity(Utils.getRandomNumber());
                 info.setPicturePath(mPath);
                 info.setDateTime(new Date().getTime());

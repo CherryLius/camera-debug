@@ -3,12 +3,18 @@ package com.example.test;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.test.pinyin.Pinyin;
 import com.ui.picker.TimePicker;
 
 import java.util.Calendar;
+
+import static com.github.promeg.pinyinhelper.Pinyin.init;
+import static com.github.promeg.pinyinhelper.Pinyin.newConfig;
+import static com.github.promeg.pinyinhelper.Pinyin.toPinyin;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -16,25 +22,58 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        findViewById(R.id.button).setOnClickListener(this);
+        findViewById(R.id.button1).setOnClickListener(this);
+        findViewById(R.id.button2).setOnClickListener(this);
+        findViewById(R.id.button3).setOnClickListener(this);
+        findViewById(R.id.button4).setOnClickListener(this);
+        findViewById(R.id.button5).setOnClickListener(this);
     }
 
 
     @Override
     public void onClick(View v) {
-        //onTimePicker(v);
-//        startActivity(new Intent(this, ExpandableActivity.class));
-        startActivity(new Intent(this, SectionActivity.class));
-//        String s = com.example.test.util.Utils.getSectionIndexer("啊方式打开房间");
-//        Log.i("Test", "s=" + s);
-//        s = com.example.test.util.Utils.getSectionIndexer("GS");
-//        Log.i("Test", "s=" + s);
-//        s = com.example.test.util.Utils.getSectionIndexer("式打开房间");
-//        Log.i("Test", "s=" + s);
-//        s = com.example.test.util.Utils.getSectionIndexer("方式打开房间");
-//        Log.i("Test", "s=" + s);
-//        s = com.example.test.util.Utils.getSectionIndexer("hg");
-//        Log.i("Test", "s=" + s);
+        switch (v.getId()) {
+            case R.id.button1:
+                onTimePicker(v);
+                break;
+            case R.id.button2:
+                startActivity(new Intent(this, ExpandableActivity.class));
+                break;
+            case R.id.button3:
+                startActivity(new Intent(this, SectionActivity.class));
+                break;
+            case R.id.button4:
+                startActivity(new Intent(this, LoginActivity.class));
+                break;
+            case R.id.button5:
+                String s = Pinyin.toPinyin("啊方式打开房间");
+                Log.i("Test", "s=" + s);
+                s = Pinyin.toPinyin("GS");
+                Log.i("Test", "s=" + s);
+                s = Pinyin.toPinyin("式打开房间");
+                Log.i("Test", "s=" + s);
+                s = Pinyin.toPinyin("拗口");
+                Log.i("Test", "s=" + s);
+                s = Pinyin.toPinyin("执拗");
+                Log.i("Test", "s=" + s);
+                s = Pinyin.toPinyin("hg");
+                Log.i("Test", "s=" + s);
+
+                init(newConfig());
+                s = toPinyin("啊方式打开房间", "");
+                Log.i("Test", "s=" + s);
+                s = toPinyin("GS", "");
+                Log.i("Test", "s=" + s);
+                s = toPinyin("式打开房间", "");
+                Log.i("Test", "s=" + s);
+                s = toPinyin("拗口", "");
+                Log.i("Test", "s=" + s);
+                s = toPinyin("执拗", "");
+                Log.i("Test", "s=" + s);
+                s = toPinyin("hg", "");
+                Log.i("Test", "s=" + s);
+                break;
+        }
     }
 
     public void onTimePicker(View view) {

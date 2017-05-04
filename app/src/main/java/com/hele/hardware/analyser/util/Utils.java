@@ -11,6 +11,7 @@ import android.util.DisplayMetrics;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Random;
 
 /**
@@ -87,7 +88,37 @@ public class Utils {
         return (appInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
     }
 
-    public static String getRandomString() {
+    private static char getRandomChar() {
+        String str = "";
+        int highPos;
+        int lowPos;
+        Random random = new Random();
+        highPos = (176 + Math.abs(random.nextInt(39)));
+        lowPos = (161 + Math.abs(random.nextInt(93)));
+
+        byte[] b = new byte[2];
+        b[0] = (Integer.valueOf(highPos)).byteValue();
+        b[1] = (Integer.valueOf(lowPos)).byteValue();
+
+        try {
+            str = new String(b, "GBK");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return str.charAt(0);
+    }
+
+    public static String getRandomChinese() {
+        Random random = new Random();
+        int length = random.nextInt(3) + 3;
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            sb.append(getRandomChar());
+        }
+        return sb.toString();
+    }
+
+    public static String getRandomEnglish() {
         Random random = new Random();
         int length = random.nextInt(6) + 4;
         StringBuilder sb = new StringBuilder(length);
