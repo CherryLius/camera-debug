@@ -29,7 +29,10 @@
         <activity android:name=".result.ResultActivity" />
         <activity android:name=".result.ResultListActivity" />
         <activity android:name=".user.info.UserInfoActivity" />
-        <activity android:name=".user.add.UserAddActivity" />
+        <activity
+            android:name=".user.add.UserAddActivity"
+            android:configChanges="keyboardHidden|screenSize|orientation"
+            android:windowSoftInputMode="adjustResize|stateUnspecified" />
     </application>
 
 </manifest>

@@ -14,7 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.hele.hardware.analyser.BaseFragment;
+import com.hele.hardware.analyser.base.BaseFragment;
 import com.hele.hardware.analyser.R;
 import com.hele.hardware.analyser.adapter.BehaviorAdapter;
 import com.hele.hardware.analyser.model.DotItem;

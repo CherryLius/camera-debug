@@ -2,8 +2,8 @@ package com.hele.hardware.analyser.behavior;
 
 import android.content.Context;
 
-import com.hele.hardware.analyser.BasePresenter;
-import com.hele.hardware.analyser.BaseView;
+import com.hele.hardware.analyser.base.BasePresenter;
+import com.hele.hardware.analyser.base.BaseView;
 import com.hele.hardware.analyser.model.DotItem;
 
 import java.util.List;

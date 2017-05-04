@@ -1,6 +1,6 @@
 package com.hele.hardware.analyser.user.info;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
 
 import com.cherry.library.ui.view.recycler.SectionItemDecoration;
@@ -89,8 +89,8 @@ public class UserInfoPresenter implements UserInfoContract.Presenter {
     }
 
     @Override
-    public void gotoUserAdd(Context context) {
-        Intent intent = new Intent(context, UserAddActivity.class);
-        context.startActivity(intent);
+    public void gotoUserAdd(Activity activity, int requestCode) {
+        Intent intent = new Intent(activity, UserAddActivity.class);
+        activity.startActivityForResult(intent, requestCode);
     }
 }

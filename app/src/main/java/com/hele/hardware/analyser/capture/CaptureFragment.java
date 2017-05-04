@@ -18,7 +18,7 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 
 import com.cherry.library.ui.view.CountDownView;
-import com.hele.hardware.analyser.BaseFragment;
+import com.hele.hardware.analyser.base.BaseFragment;
 import com.hele.hardware.analyser.R;
 import com.hele.hardware.analyser.util.HLog;
 import com.hele.hardware.analyser.util.Utils;

@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,15 +14,15 @@ import android.view.View;
 
 import com.hele.hardware.analyser.R;
 import com.hele.hardware.analyser.adapter.MainCardAdapter;
+import com.hele.hardware.analyser.base.BaseActivity;
 import com.hele.hardware.analyser.model.CardItem;
 
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MainActivity extends AppCompatActivity implements MainContract.View {
+public class MainActivity extends BaseActivity implements MainContract.View {
 
     @BindView(R.id.collapsing_toolbar_layout)
     CollapsingToolbarLayout collapsingToolbarLayout;
@@ -48,20 +47,33 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
-        init();
         initView();
         new MainPresenter(this, this);
         mPresenter.initMenu();
     }
 
-    void init() {
-        setSupportActionBar(toolbar);
-        collapsingToolbarLayout.setTitleEnabled(false);
+    @Override
+    protected int getRootLayoutId() {
+        return R.layout.activity_main;
+    }
+
+    @Override
+    protected int getContentLayoutId() {
+        return 0;
+    }
+
+    @Override
+    protected int getToolbarContentLayoutId() {
+        return 0;
+    }
+
+    @Override
+    protected String getToolBarTitle() {
+        return null;
     }
 
     void initView() {
+        collapsingToolbarLayout.setTitleEnabled(false);
         ViewCompat.setNestedScrollingEnabled(recyclerView, true);
         mMainCardAdapter = new MainCardAdapter(this);
         RecyclerView.LayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);

@@ -1,4 +1,4 @@
-package com.hele.hardware.analyser;
+package com.hele.hardware.analyser.base;
 
 import android.support.annotation.NonNull;
 

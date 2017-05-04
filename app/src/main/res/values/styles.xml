@@ -39,6 +39,17 @@
         <item name="android:gravity">center_vertical</item>
     </style>
 
+    <style name="TextView.UserAdd">
+        <item name="android:textColor">@color/colorGrey_800</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
     <!--Button-->
     <style name="Button" parent="TextAppearance.AppCompat.Medium" />
+
+    <style name="Button.UserAdd">
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:background">@drawable/ic_color_red_rect_bg</item>
+    </style>
 </resources>

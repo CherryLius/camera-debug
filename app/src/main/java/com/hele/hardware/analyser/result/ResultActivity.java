@@ -6,10 +6,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
@@ -18,6 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.hele.hardware.analyser.R;
+import com.hele.hardware.analyser.base.BaseActivity;
 import com.hele.hardware.analyser.model.ResultInfo;
 import com.hele.hardware.analyser.util.Utils;
 
@@ -25,20 +24,17 @@ import java.io.File;
 import java.util.Date;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
  * Created by Administrator on 2017/4/24.
  */
 
-public class ResultActivity extends AppCompatActivity implements ResultContract.View {
+public class ResultActivity extends BaseActivity implements ResultContract.View {
 
     private static final String TAG = "ResultActivity";
     private static final String EXTRA_PATH = "extra_path";
 
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
     @BindView(R.id.tv_result)
     AppCompatTextView resultTextView;
     @BindView(R.id.iv_result)
@@ -54,14 +50,26 @@ public class ResultActivity extends AppCompatActivity implements ResultContract.
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_result);
-        ButterKnife.bind(this);
         init();
+    }
+
+    @Override
+    protected int getContentLayoutId() {
+        return R.layout.activity_result;
+    }
+
+    @Override
+    protected int getToolbarContentLayoutId() {
+        return 0;
+    }
+
+    @Override
+    protected String getToolBarTitle() {
+        return "结果显示";
     }
 
     void init() {
         new ResultPresenter(this);
-        setSupportActionBar(toolbar);
         resultTextView.setMovementMethod(ScrollingMovementMethod.getInstance());
         progressBar.setVisibility(View.VISIBLE);
         resultLayout.setVisibility(View.GONE);

@@ -13,6 +13,8 @@
     <color name="colorOrange_700">#f57c00</color>
     <color name="colorOrange_800">#ef6c00</color>
 
+    <color name="colorRed_600">#e53935</color>
+
     <color name="colorWhite">#ffffffff</color>
 
     <color name="colorBlack">#000000</color>

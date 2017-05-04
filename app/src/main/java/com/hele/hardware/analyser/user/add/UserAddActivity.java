@@ -2,58 +2,64 @@ package com.hele.hardware.analyser.user.add;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import com.hele.hardware.analyser.R;
+import com.hele.hardware.analyser.base.BaseActivity;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class UserAddActivity extends AppCompatActivity implements UserAddContract.View {
+public class UserAddActivity extends BaseActivity implements UserAddContract.View {
 
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-    @BindView(R.id.tv_toolbar_title)
-    TextView titleView;
     @BindView(R.id.et_name)
     EditText nameEt;
-    @BindView(R.id.et_sex)
-    EditText sexEt;
     @BindView(R.id.et_age)
     EditText ageEt;
+    @BindView(R.id.rg_sex)
+    RadioGroup radioGroup;
+    @BindView(R.id.rb_male)
+    RadioButton maleRb;
+    @BindView(R.id.rb_female)
+    RadioButton femaleRb;
 
     private UserAddContract.Presenter mPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_add);
-        ButterKnife.bind(this);
         new UserAddPresenter(this);
-        init();
     }
 
-    private void init() {
-        setSupportActionBar(toolbar);
-        titleView.setText("添加用户");
+    @Override
+    protected int getContentLayoutId() {
+        return R.layout.activity_user_add;
     }
 
-    @OnClick({R.id.btn_save, R.id.iv_back})
+    @Override
+    protected int getToolbarContentLayoutId() {
+        return 0;
+    }
+
+    @Override
+    protected String getToolBarTitle() {
+        return "添加用户";
+    }
+
+
+    @OnClick({R.id.btn_complete})
     void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btn_save:
+            case R.id.btn_complete:
+                mPresenter.hideKeyboard(this);
                 if (mPresenter.saveInfo()) {
+                    setResult(RESULT_OK);
                     finish();
                 }
-                break;
-            case R.id.iv_back:
-                finish();
                 break;
         }
     }
@@ -70,7 +76,12 @@ public class UserAddActivity extends AppCompatActivity implements UserAddContrac
 
     @Override
     public String getSex() {
-        return sexEt.getText().toString();
+        int id = radioGroup.getCheckedRadioButtonId();
+        if (id == R.id.rb_male) {
+            return maleRb.getText().toString();
+        } else {
+            return femaleRb.getText().toString();
+        }
     }
 
     @Override
@@ -87,8 +98,6 @@ public class UserAddActivity extends AppCompatActivity implements UserAddContrac
             editText = nameEt;
         } else if (et.equals("age")) {
             editText = ageEt;
-        } else if (et.equals("sex")) {
-            editText = sexEt;
         }
         if (editText != null) {
             editText.requestFocus();

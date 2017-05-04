@@ -1,10 +1,10 @@
 package com.hele.hardware.analyser.user.info;
 
-import android.content.Context;
+import android.app.Activity;
 
 import com.cherry.library.ui.view.recycler.SectionItemDecoration;
-import com.hele.hardware.analyser.BasePresenter;
-import com.hele.hardware.analyser.BaseView;
+import com.hele.hardware.analyser.base.BasePresenter;
+import com.hele.hardware.analyser.base.BaseView;
 import com.hele.hardware.analyser.model.UserInfo;
 
 import java.util.List;
@@ -24,6 +24,6 @@ public interface UserInfoContract {
 
         SectionItemDecoration.ISectionProvider getSectionProvider();
 
-        void gotoUserAdd(Context context);
+        void gotoUserAdd(Activity activity, int requestCode);
     }
 }

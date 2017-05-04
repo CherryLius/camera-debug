@@ -1,36 +1,31 @@
 package com.hele.hardware.analyser.user.info;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.TextView;
 
 import com.cherry.library.ui.view.recycler.SectionItemDecoration;
 import com.hele.hardware.analyser.R;
 import com.hele.hardware.analyser.adapter.UserInfoAdapter;
+import com.hele.hardware.analyser.base.BaseActivity;
 import com.hele.hardware.analyser.model.UserInfo;
 
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
  * Created by Administrator on 2017/5/2.
  */
 
-public class UserInfoActivity extends AppCompatActivity implements UserInfoContract.View {
+public class UserInfoActivity extends BaseActivity implements UserInfoContract.View {
 
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-    @BindView(R.id.tv_toolbar_title)
-    TextView titleView;
+    private static final int REQUEST_CODE_USER_ADD = 101;
     @BindView(R.id.recycler)
     RecyclerView recyclerView;
 
@@ -40,14 +35,25 @@ public class UserInfoActivity extends AppCompatActivity implements UserInfoContr
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_info);
-        ButterKnife.bind(this);
         init();
     }
 
+    @Override
+    protected int getContentLayoutId() {
+        return R.layout.layout_recycler;
+    }
+
+    @Override
+    protected int getToolbarContentLayoutId() {
+        return R.layout.layout_search;
+    }
+
+    @Override
+    protected String getToolBarTitle() {
+        return "用户信息";
+    }
+
     void init() {
-        setSupportActionBar(toolbar);
-        titleView.setText("用户信息");
         new UserInfoPresenter(this);
 
         mAdapter = new UserInfoAdapter();
@@ -58,14 +64,11 @@ public class UserInfoActivity extends AppCompatActivity implements UserInfoContr
         mPresenter.loadUsers();
     }
 
-    @OnClick({R.id.iv_back, R.id.iv_add})
+    @OnClick({R.id.iv_add})
     void onClick(View view) {
         switch (view.getId()) {
-            case R.id.iv_back:
-                finish();
-                break;
             case R.id.iv_add:
-                mPresenter.gotoUserAdd(this);
+                mPresenter.gotoUserAdd(this, REQUEST_CODE_USER_ADD);
                 break;
         }
     }
@@ -78,5 +81,13 @@ public class UserInfoActivity extends AppCompatActivity implements UserInfoContr
     @Override
     public void showUsers(List<UserInfo> users) {
         mAdapter.updateUsers(users);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_USER_ADD && resultCode == RESULT_OK) {
+            mAdapter.notifyDataSetChanged();
+        }
     }
 }
