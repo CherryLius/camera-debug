@@ -16,13 +16,17 @@ public interface UserAddContract {
 
         String getSex();
 
-        String getAge();
+        String getBirthday();
+
+        void showChosenBirthday(String birthday);
 
         void showInputError(String et, String message);
     }
 
     interface Presenter extends BasePresenter {
         boolean saveInfo();
+
+        void chooseBirthday(Activity activity);
 
         void hideKeyboard(Activity activity);
     }

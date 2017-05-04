@@ -26,8 +26,8 @@ public class UserInfoDao extends AbstractDao<UserInfo, Long> {
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property Name = new Property(1, String.class, "name", false, "NAME");
-        public final static Property Age = new Property(2, int.class, "age", false, "AGE");
-        public final static Property Sex = new Property(3, int.class, "sex", false, "SEX");
+        public final static Property Sex = new Property(2, int.class, "sex", false, "SEX");
+        public final static Property Birthday = new Property(3, String.class, "birthday", false, "BIRTHDAY");
     }
 
 
@@ -45,8 +45,8 @@ public class UserInfoDao extends AbstractDao<UserInfo, Long> {
         db.execSQL("CREATE TABLE " + constraint + "\"USER_INFO\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY ," + // 0: id
                 "\"NAME\" TEXT," + // 1: name
-                "\"AGE\" INTEGER NOT NULL ," + // 2: age
-                "\"SEX\" INTEGER NOT NULL );"); // 3: sex
+                "\"SEX\" INTEGER NOT NULL ," + // 2: sex
+                "\"BIRTHDAY\" TEXT);"); // 3: birthday
     }
 
     /** Drops the underlying database table. */
@@ -68,8 +68,12 @@ public class UserInfoDao extends AbstractDao<UserInfo, Long> {
         if (name != null) {
             stmt.bindString(2, name);
         }
-        stmt.bindLong(3, entity.getAge());
-        stmt.bindLong(4, entity.getSex());
+        stmt.bindLong(3, entity.getSex());
+ 
+        String birthday = entity.getBirthday();
+        if (birthday != null) {
+            stmt.bindString(4, birthday);
+        }
     }
 
     @Override
@@ -85,8 +89,12 @@ public class UserInfoDao extends AbstractDao<UserInfo, Long> {
         if (name != null) {
             stmt.bindString(2, name);
         }
-        stmt.bindLong(3, entity.getAge());
-        stmt.bindLong(4, entity.getSex());
+        stmt.bindLong(3, entity.getSex());
+ 
+        String birthday = entity.getBirthday();
+        if (birthday != null) {
+            stmt.bindString(4, birthday);
+        }
     }
 
     @Override
@@ -99,8 +107,8 @@ public class UserInfoDao extends AbstractDao<UserInfo, Long> {
         UserInfo entity = new UserInfo( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // name
-            cursor.getInt(offset + 2), // age
-            cursor.getInt(offset + 3) // sex
+            cursor.getInt(offset + 2), // sex
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3) // birthday
         );
         return entity;
     }
@@ -109,8 +117,8 @@ public class UserInfoDao extends AbstractDao<UserInfo, Long> {
     public void readEntity(Cursor cursor, UserInfo entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setName(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setAge(cursor.getInt(offset + 2));
-        entity.setSex(cursor.getInt(offset + 3));
+        entity.setSex(cursor.getInt(offset + 2));
+        entity.setBirthday(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
      }
     
     @Override

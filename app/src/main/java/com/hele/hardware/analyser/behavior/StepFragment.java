@@ -107,9 +107,9 @@ public class StepFragment extends BaseFragment implements View.OnClickListener {
     private void showTimePicker() {
         if (timePicker == null) {
             timePicker = new TimePicker(getActivity(), TimePicker.HOUR_24);
-            timePicker.setRangeStart(0, 0);//00:00
+            timePicker.setRangeStart(0, 1);//00:01
             timePicker.setRangeEnd(23, 59);//23:59
-            timePicker.setSelectedItem(0, 0);
+            timePicker.setSelectedItem(0, 15);
             timePicker.setTopLineVisible(false);
             timePicker.setLineVisible(false);
             timePicker.setOnTimePickListener(new TimePicker.OnTimePickListener() {

@@ -17,7 +17,8 @@
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:padding="8dp">
 
             <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/et_name"
@@ -27,24 +28,12 @@
                 android:hint="@string/label_name" />
         </android.support.design.widget.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/et_age"
-                style="@style/TextView.UserAdd"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/label_age"
-                android:inputType="number" />
-        </android.support.design.widget.TextInputLayout>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="8dp">
 
             <android.support.v7.widget.AppCompatTextView
                 style="@style/TextView.UserAdd"
@@ -52,8 +41,37 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:paddingLeft="8dp"
                 android:paddingRight="8dp"
+                android:text="@string/label_birthday"
+                android:textSize="14sp" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tv_birthday_choose"
+                style="@style/TextView.UserAdd"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
+                android:drawablePadding="8dp"
+                android:drawableRight="@drawable/ic_chevron_right_black_24dp"
+                android:gravity="center_vertical|right"
+                android:hint="@string/label_choose_birthday"
+                android:paddingLeft="8dp"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
+            <android.support.v7.widget.AppCompatTextView
+                style="@style/TextView.UserAdd"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
                 android:text="@string/label_sex"
                 android:textSize="14sp" />
 

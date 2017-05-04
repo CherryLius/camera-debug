@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hele.hardware.analyser.R;
 import com.hele.hardware.analyser.base.BaseActivity;
@@ -18,8 +20,8 @@ public class UserAddActivity extends BaseActivity implements UserAddContract.Vie
 
     @BindView(R.id.et_name)
     EditText nameEt;
-    @BindView(R.id.et_age)
-    EditText ageEt;
+    @BindView(R.id.tv_birthday_choose)
+    TextView birthdayView;
     @BindView(R.id.rg_sex)
     RadioGroup radioGroup;
     @BindView(R.id.rb_male)
@@ -51,7 +53,7 @@ public class UserAddActivity extends BaseActivity implements UserAddContract.Vie
     }
 
 
-    @OnClick({R.id.btn_complete})
+    @OnClick({R.id.btn_complete, R.id.tv_birthday_choose})
     void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_complete:
@@ -60,6 +62,9 @@ public class UserAddActivity extends BaseActivity implements UserAddContract.Vie
                     setResult(RESULT_OK);
                     finish();
                 }
+                break;
+            case R.id.tv_birthday_choose:
+                mPresenter.chooseBirthday(this);
                 break;
         }
     }
@@ -85,8 +90,13 @@ public class UserAddActivity extends BaseActivity implements UserAddContract.Vie
     }
 
     @Override
-    public String getAge() {
-        return ageEt.getText().toString();
+    public String getBirthday() {
+        return birthdayView.getText().toString();
+    }
+
+    @Override
+    public void showChosenBirthday(String birthday) {
+        birthdayView.setText(birthday);
     }
 
     @Override
@@ -96,8 +106,8 @@ public class UserAddActivity extends BaseActivity implements UserAddContract.Vie
         EditText editText = null;
         if (et.equals("name")) {
             editText = nameEt;
-        } else if (et.equals("age")) {
-            editText = ageEt;
+        } else if (et.equals("birthday")) {
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         }
         if (editText != null) {
             editText.requestFocus();

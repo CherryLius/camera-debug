@@ -21,8 +21,10 @@
     <string name="second"><xliff:g id="minute">%1$d</xliff:g>秒</string>
 
     <string name="label_name">姓名</string>
-    <string name="label_sex">性别：</string>
-    <string name="label_age">年龄</string>
+    <string name="label_sex">性别:</string>
+    <string name="label_age">年龄:</string>
+    <string name="label_birthday">出生年月:</string>
+    <string name="label_choose_birthday">请选择出生年月</string>
     <string name="label_complete">完成</string>
     <string name="male">男</string>
     <string name="female">女</string>

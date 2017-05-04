@@ -421,13 +421,18 @@ public class DateTimePicker extends WheelPicker {
                         return;
                     }
                     //LogUtils.verbose(this, "change months after year wheeled");
-                    selectedMonthIndex = 0;//重置月份索引
-                    selectedDayIndex = 0;//重置日子索引
+                    //TODO: changed by cherry
+                    //selectedMonthIndex = 0;//重置月份索引
+                    //selectedDayIndex = 0;//重置日子索引
                     //需要根据年份及月份动态计算天数
                     int selectedYear = DateUtils.trimZero(item);
                     changeMonthData(selectedYear);
+                    //TODO: changed by cherry
+                    selectedMonthIndex = (selectedMonthIndex > months.size() - 1) ? months.size() - 1: selectedMonthIndex;
                     monthView.setItems(months, selectedMonthIndex);
                     changeDayData(selectedYear, DateUtils.trimZero(months.get(selectedMonthIndex)));
+                    //TODO: changed by cherry
+                    selectedDayIndex = (selectedDayIndex > days.size() - 1) ? days.size() - 1: selectedDayIndex;
                     dayView.setItems(days, selectedDayIndex);
                 }
             });
@@ -462,7 +467,8 @@ public class DateTimePicker extends WheelPicker {
                     }
                     if (dateMode == YEAR_MONTH_DAY || dateMode == MONTH_DAY) {
                         //LogUtils.verbose(this, "change days after month wheeled");
-                        selectedDayIndex = 0;//重置日子索引
+                        //TODO: changed by cherry
+                        //selectedDayIndex = 0;//重置日子索引
                         int selectedYear;
                         if (dateMode == YEAR_MONTH_DAY) {
                             selectedYear = DateUtils.trimZero(getSelectedYear());
@@ -470,6 +476,8 @@ public class DateTimePicker extends WheelPicker {
                             selectedYear = Calendar.getInstance(Locale.CHINA).get(Calendar.YEAR);
                         }
                         changeDayData(selectedYear, DateUtils.trimZero(item));
+                        //TODO: changed by cherry
+                        selectedDayIndex = (selectedDayIndex > days.size() - 1) ? days.size() - 1: selectedDayIndex;
                         dayView.setItems(days, selectedDayIndex);
                     }
                 }
