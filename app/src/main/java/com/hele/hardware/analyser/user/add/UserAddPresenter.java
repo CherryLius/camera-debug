@@ -79,22 +79,20 @@ public class UserAddPresenter implements UserAddContract.Presenter {
     }
 
     private boolean invalidCheck(String content, String view) {
-        if (TextUtils.isEmpty(content)) {
-            mView.showInputError(view, "不能为空");
+        if (view.equals("birthday") &&
+                (TextUtils.isEmpty(content) || !content.contains("-"))) {
+            mView.showInputError(view, "请选择出生日期");
             return false;
-        } else {
-            /*if (view.equals("sex")
-                    && (!content.equals("男") && !content.equals("女"))) {
-                mView.showInputError(view, "输入性别 男 或 女");
+        } else if (view.equals("name")) {
+            if (TextUtils.isEmpty(content)) {
+                mView.showInputError(view, "不能为空");
                 return false;
-            }*/
-            if (view.equals("birthday") && !content.contains("-")) {
-                mView.showInputError(view, "请选择出生日期");
-                return false;
+            } else {
+                mView.showInputError(view, null);
+                return true;
             }
-            mView.showInputError(view, null);
-            return true;
         }
+        return true;
     }
 
     private int getAgeFromBirthday(String birthday) {
