@@ -102,15 +102,10 @@ public class ResultPresenter implements ResultContract.Presenter {
 
     private void stopBackgroundThread() {
         if (mBackgroundThread != null) {
-            try {
-                mBackgroundHandler.removeCallbacksAndMessages(null);
-                mBackgroundThread.quitSafely();
-                mBackgroundThread.join();
-                mBackgroundThread = null;
-                mBackgroundHandler = null;
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            mBackgroundHandler.removeCallbacksAndMessages(null);
+            mBackgroundThread.quitSafely();
+            mBackgroundThread = null;
+            mBackgroundHandler = null;
         }
     }
 

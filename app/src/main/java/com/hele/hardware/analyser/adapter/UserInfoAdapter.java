@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.hele.hardware.analyser.R;
+import com.hele.hardware.analyser.base.BaseRecyclerAdapter;
 import com.hele.hardware.analyser.model.UserInfo;
 
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
  * Created by Administrator on 2017/5/2.
  */
 
-public class UserInfoAdapter extends RecyclerView.Adapter<UserInfoAdapter.UserHolder> {
+public class UserInfoAdapter extends BaseRecyclerAdapter<UserInfoAdapter.UserHolder> {
 
     private List<UserInfo> mUserInfoList;
 
@@ -27,6 +28,7 @@ public class UserInfoAdapter extends RecyclerView.Adapter<UserInfoAdapter.UserHo
 
     @Override
     public void onBindViewHolder(UserHolder holder, int position) {
+        super.onBindViewHolder(holder, position);
         UserInfo info = mUserInfoList.get(position);
         holder.textView.setText(info.getName());
     }

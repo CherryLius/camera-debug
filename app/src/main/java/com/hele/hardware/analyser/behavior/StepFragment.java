@@ -7,8 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.hele.hardware.analyser.base.BaseFragment;
 import com.hele.hardware.analyser.R;
+import com.hele.hardware.analyser.base.BaseFragment;
+import com.hele.hardware.analyser.user.info.UserInfoActivity;
 import com.ui.picker.TimePicker;
 
 /**
@@ -100,6 +101,10 @@ public class StepFragment extends BaseFragment implements View.OnClickListener {
 
     private void executeConfirm() {
         if (mStep == 1) {
+            UserInfoActivity.toActivityForResult(getActivity(), "type_select", 101);
+            confirmButton.setVisibility(View.GONE);
+            nextButton.setVisibility(View.VISIBLE);
+        } else if (mStep == 2) {
             showTimePicker();
         }
     }

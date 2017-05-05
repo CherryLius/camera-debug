@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import com.bumptech.glide.Glide;
 import com.hele.hardware.analyser.App;
 import com.hele.hardware.analyser.R;
+import com.hele.hardware.analyser.base.BaseRecyclerAdapter;
 import com.hele.hardware.analyser.model.ResultInfo;
 
 import java.text.SimpleDateFormat;
@@ -23,7 +24,7 @@ import butterknife.ButterKnife;
  * Created by Administrator on 2017/4/24.
  */
 
-public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ResultHolder> {
+public class ResultAdapter extends BaseRecyclerAdapter<ResultAdapter.ResultHolder> {
 
     private List<ResultInfo> mResults;
     private SimpleDateFormat mFormatter;
@@ -40,6 +41,7 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ResultHold
 
     @Override
     public void onBindViewHolder(ResultHolder holder, int position) {
+        super.onBindViewHolder(holder, position);
         ResultInfo info = mResults.get(position);
         Glide.with(App.getContext()).load(info.getPicturePath()).into(holder.imageView);
         holder.valueView.setText(info.getValue());

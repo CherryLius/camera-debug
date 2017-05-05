@@ -93,4 +93,9 @@ public class UserInfoPresenter implements UserInfoContract.Presenter {
         Intent intent = new Intent(activity, UserAddActivity.class);
         activity.startActivityForResult(intent, requestCode);
     }
+
+    @Override
+    public void onItemClick(Activity activity, int position) {
+        activity.finish();
+    }
 }

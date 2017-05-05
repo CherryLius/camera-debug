@@ -71,7 +71,7 @@ public class BehaviorFragment extends BaseFragment implements BehaviorContract.V
     }
 
     void initFragments() {
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 3; i++) {
             StepFragment fragment = StepFragment.newInstance(i);
             fragment.setStepListener(this);
             fragment.setOnTimePickListener(this);

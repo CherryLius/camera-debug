@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import com.cherry.library.ui.view.DotLineView;
 import com.hele.hardware.analyser.R;
+import com.hele.hardware.analyser.base.BaseRecyclerAdapter;
 import com.hele.hardware.analyser.model.DotItem;
 
 import java.util.List;
@@ -21,7 +22,7 @@ import butterknife.ButterKnife;
  * Created by Administrator on 2017/4/20.
  */
 
-public class BehaviorAdapter extends RecyclerView.Adapter<BehaviorAdapter.Holder> {
+public class BehaviorAdapter extends BaseRecyclerAdapter<BehaviorAdapter.Holder> {
 
     private Context mContext;
     private List<DotItem> mItemList;
@@ -47,6 +48,7 @@ public class BehaviorAdapter extends RecyclerView.Adapter<BehaviorAdapter.Holder
 
     @Override
     public void onBindViewHolder(Holder holder, int position) {
+        super.onBindViewHolder(holder, position);
         DotItem item = mItemList.get(position);
 
         holder.dotView.setNormalColor(ContextCompat.getColor(mContext, R.color.colorOrange_200));

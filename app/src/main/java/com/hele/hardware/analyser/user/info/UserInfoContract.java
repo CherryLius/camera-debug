@@ -25,5 +25,7 @@ public interface UserInfoContract {
         SectionItemDecoration.ISectionProvider getSectionProvider();
 
         void gotoUserAdd(Activity activity, int requestCode);
+
+        void onItemClick(Activity activity, int position);
     }
 }

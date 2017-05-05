@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.button3).setOnClickListener(this);
         findViewById(R.id.button4).setOnClickListener(this);
         findViewById(R.id.button5).setOnClickListener(this);
+        findViewById(R.id.button6).setOnClickListener(this);
     }
 
 
@@ -72,6 +73,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.i("Test", "s=" + s);
                 s = toPinyin("hg", "");
                 Log.i("Test", "s=" + s);
+                break;
+            case R.id.button6:
+                startActivity(new Intent(this, MediaPlayActivity.class));
                 break;
         }
     }

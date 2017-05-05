@@ -3,6 +3,8 @@ package com.hele.hardware.analyser.base;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 
+import com.hele.hardware.analyser.listener.LifecycleCallback;
+
 /**
  * Created by Administrator on 2017/4/7.
  */

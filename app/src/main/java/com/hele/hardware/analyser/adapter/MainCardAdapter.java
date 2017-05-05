@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.hele.hardware.analyser.R;
+import com.hele.hardware.analyser.base.BaseRecyclerAdapter;
 import com.hele.hardware.analyser.model.CardItem;
 
 import java.util.List;
@@ -21,7 +22,7 @@ import butterknife.ButterKnife;
  * Created by Administrator on 2017/4/19.
  */
 
-public class MainCardAdapter extends RecyclerView.Adapter<MainCardAdapter.CardHolder> {
+public class MainCardAdapter extends BaseRecyclerAdapter<MainCardAdapter.CardHolder> {
 
     private Context mContext;
     private List<CardItem> mCardItemList;
@@ -43,6 +44,7 @@ public class MainCardAdapter extends RecyclerView.Adapter<MainCardAdapter.CardHo
 
     @Override
     public void onBindViewHolder(CardHolder holder, int position) {
+        super.onBindViewHolder(holder, position);
         CardItem item = mCardItemList.get(position);
         if (!TextUtils.isEmpty(item.getTitle()))
             holder.titleView.setText(item.getTitle());

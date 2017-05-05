@@ -1,5 +1,6 @@
 package com.hele.hardware.analyser.user.info;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,6 +13,7 @@ import com.cherry.library.ui.view.recycler.SectionItemDecoration;
 import com.hele.hardware.analyser.R;
 import com.hele.hardware.analyser.adapter.UserInfoAdapter;
 import com.hele.hardware.analyser.base.BaseActivity;
+import com.hele.hardware.analyser.listener.OnItemClickListener;
 import com.hele.hardware.analyser.model.UserInfo;
 
 import java.util.List;
@@ -26,15 +28,19 @@ import butterknife.OnClick;
 public class UserInfoActivity extends BaseActivity implements UserInfoContract.View {
 
     private static final int REQUEST_CODE_USER_ADD = 101;
+    private static final String EXTRA_TYPE = "extra_type";
     @BindView(R.id.recycler)
     RecyclerView recyclerView;
 
     private UserInfoAdapter mAdapter;
     private UserInfoContract.Presenter mPresenter;
 
+    private String mType;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mType = getIntent().getStringExtra(EXTRA_TYPE);
         init();
     }
 
@@ -57,6 +63,15 @@ public class UserInfoActivity extends BaseActivity implements UserInfoContract.V
         new UserInfoPresenter(this);
 
         mAdapter = new UserInfoAdapter();
+
+        if ("type_select".equals(mType)) {
+            mAdapter.setOnItemClickListener(new OnItemClickListener() {
+                @Override
+                public void onItemClick(View view, int position, long id) {
+                    mPresenter.onItemClick(UserInfoActivity.this, position);
+                }
+            });
+        }
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recyclerView.addItemDecoration(new SectionItemDecoration(this, mPresenter.getSectionProvider()));
         recyclerView.setAdapter(mAdapter);
@@ -89,5 +104,11 @@ public class UserInfoActivity extends BaseActivity implements UserInfoContract.V
         if (requestCode == REQUEST_CODE_USER_ADD && resultCode == RESULT_OK) {
             mAdapter.notifyDataSetChanged();
         }
+    }
+
+    public static void toActivityForResult(Activity activity, String type, int requestCode) {
+        Intent intent = new Intent(activity, UserInfoActivity.class);
+        intent.putExtra(EXTRA_TYPE, type);
+        activity.startActivityForResult(intent, requestCode);
     }
 }

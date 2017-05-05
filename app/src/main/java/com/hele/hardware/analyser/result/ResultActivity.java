@@ -127,7 +127,6 @@ public class ResultActivity extends BaseActivity implements ResultContract.View 
     void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_save:
-                Toast.makeText(this, "save result", Toast.LENGTH_SHORT).show();
                 ResultInfo info = new ResultInfo();
                 info.setName(Utils.getRandomEnglish());
                 info.setIdentity(Utils.getRandomNumber());
@@ -135,6 +134,7 @@ public class ResultActivity extends BaseActivity implements ResultContract.View 
                 info.setDateTime(new Date().getTime());
                 info.setValue(resultTextView.getText().toString());
                 mPresenter.saveResult(info);
+                finish();
                 break;
         }
     }

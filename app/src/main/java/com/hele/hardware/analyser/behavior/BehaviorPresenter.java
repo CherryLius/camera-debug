@@ -41,6 +41,10 @@ public class BehaviorPresenter implements BehaviorContract.Presenter {
         mItemList.add(item);
 
         item = new DotItem();
+        item.setTitle("用户选择");
+        mItemList.add(item);
+
+        item = new DotItem();
         item.setTitle("时间设定");
         mItemList.add(item);
 
