@@ -72,13 +72,15 @@ public class OpenCVUtil {
      */
     private static Rect findBoundRect(List<MatOfPoint> points) {
         Rect rect = null;
+        double max = 0;
         for (int i = 0; i < points.size(); i++) {
             MatOfPoint point = points.get(i);
             Rect tmp = Imgproc.boundingRect(point);
-            int area = tmp.width * tmp.height;
-            if (area < 200000)
-                continue;
-            rect = tmp;
+            double area = tmp.area();
+            if (max < area) {
+                max = area;
+                rect = tmp;
+            }
         }
         return rect;
     }

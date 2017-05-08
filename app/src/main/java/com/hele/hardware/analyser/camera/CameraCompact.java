@@ -70,14 +70,11 @@ public class CameraCompact {
     }
 
     private void stopBackgroundThread() {
-        if (mBackgroundThread != null)
-            try {
-                mBackgroundThread.quitSafely();
-                mBackgroundThread.join();
-                mBackgroundThread = null;
-                mBackgroundHandler = null;
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        if (mBackgroundThread != null) {
+            mBackgroundHandler.removeCallbacksAndMessages(null);
+            mBackgroundThread.quitSafely();
+            mBackgroundThread = null;
+            mBackgroundHandler = null;
+        }
     }
 }

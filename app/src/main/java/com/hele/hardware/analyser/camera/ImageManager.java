@@ -148,16 +148,12 @@ public class ImageManager {
     }
 
     private void stopBackgroundThread() {
-        if (mBackgroundThread != null)
-            try {
-                mBackgroundHandler.removeCallbacksAndMessages(null);
-                mBackgroundThread.quitSafely();
-                mBackgroundThread.join();
-                mBackgroundThread = null;
-                mBackgroundHandler = null;
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        if (mBackgroundThread != null) {
+            mBackgroundHandler.removeCallbacksAndMessages(null);
+            mBackgroundThread.quitSafely();
+            mBackgroundThread = null;
+            mBackgroundHandler = null;
+        }
     }
 
     private void fileScan(String... path) {

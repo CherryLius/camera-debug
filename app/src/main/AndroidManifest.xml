@@ -33,6 +33,7 @@
             android:name=".user.add.UserAddActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:windowSoftInputMode="adjustResize|stateUnspecified" />
+        <activity android:name=".result.DebugActivity" />
     </application>
 
 </manifest>

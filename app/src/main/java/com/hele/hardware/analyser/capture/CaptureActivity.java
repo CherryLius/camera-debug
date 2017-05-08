@@ -45,7 +45,9 @@ public class CaptureActivity extends BaseActivity implements CaptureContract.Cap
         cf.setCaptureListener(this);
         mFragment = cf;
         if (getIntent() != null) {
-            Bundle args = getIntent().getBundleExtra("arguments");
+            Bundle args = new Bundle();
+            args.putString("hour", getIntent().getStringExtra("hour"));
+            args.putString("minute", getIntent().getStringExtra("minute"));
             mFragment.setArguments(args);
         }
         getSupportFragmentManager().beginTransaction().add(R.id.content_container, mFragment).commit();

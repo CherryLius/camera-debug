@@ -1,5 +1,6 @@
 package com.hele.hardware.analyser.result;
 
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
@@ -17,6 +18,9 @@ import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 
 import java.io.File;
+import java.lang.ref.SoftReference;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by Administrator on 2017/4/24.
@@ -28,6 +32,8 @@ public class ResultPresenter implements ResultContract.Presenter {
 
     private ResultContract.View mView;
 
+    private ExecutorService mExecutor;
+    private AnalyseTask mTask;
     private HandlerThread mBackgroundThread;
     private Handler mBackgroundHandler;
 
@@ -38,13 +44,22 @@ public class ResultPresenter implements ResultContract.Presenter {
 
     @Override
     public void setup() {
-        startBackgroundThread();
+        mExecutor = Executors.newFixedThreadPool(5);
+        //startBackgroundThread();
         initOpenCVAsync();
     }
 
     @Override
     public void destroy() {
-        stopBackgroundThread();
+        if (mTask != null && !mTask.isCancelled()) {
+            mTask.cancel(true);
+            mTask = null;
+        }
+        if (mExecutor != null) {
+            mExecutor.shutdownNow();
+            mExecutor = null;
+        }
+        //stopBackgroundThread();
     }
 
     @Override
@@ -56,6 +71,27 @@ public class ResultPresenter implements ResultContract.Presenter {
 
     @Override
     public void analyse(final String path) {
+        mTask = new AnalyseTask(mView);
+        mTask.executeOnExecutor(mExecutor, path);
+        //analyseOnThread(path);
+    }
+
+    @Override
+    public void saveResult(ResultInfo info) {
+        ResultInfoDaoHelper.instance().add(info);
+    }
+
+    private void initOpenCVAsync() {
+        if (!OpenCVLoader.initDebug()) {
+            HLog.d(TAG, "Internal OpenCV library not found. Using OpenCV Manager for initialization");
+            OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_2_0, App.getContext(), mLoaderCallback);
+        } else {
+            HLog.d(TAG, "OpenCV library found inside package. Using it!");
+            mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
+        }
+    }
+
+    private void analyseOnThread(final String path) {
         mBackgroundHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -77,21 +113,6 @@ public class ResultPresenter implements ResultContract.Presenter {
                 mView.showResult(builder.toString());
             }
         });
-    }
-
-    @Override
-    public void saveResult(ResultInfo info) {
-        ResultInfoDaoHelper.instance().add(info);
-    }
-
-    private void initOpenCVAsync() {
-        if (!OpenCVLoader.initDebug()) {
-            HLog.d(TAG, "Internal OpenCV library not found. Using OpenCV Manager for initialization");
-            OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_2_0, App.getContext(), mLoaderCallback);
-        } else {
-            HLog.d(TAG, "OpenCV library found inside package. Using it!");
-            mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
-        }
     }
 
     private void startBackgroundThread() {
@@ -124,4 +145,44 @@ public class ResultPresenter implements ResultContract.Presenter {
 
         }
     };
+
+    private class AnalyseTask extends AsyncTask<String, Void, String> {
+
+        private SoftReference<ResultContract.View> mViewRef;
+
+        public AnalyseTask(ResultContract.View view) {
+            mViewRef = new SoftReference<>(view);
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            if (params == null || params.length == 0)
+                return null;
+            String path = params[0];
+            File file = new File(path);
+            if (!file.exists() && mViewRef.get() != null) {
+                mViewRef.get().showToast("empty path");
+                return null;
+            }
+            float[] levels = OpenCVUtil.clipTestPaper(path);
+            if (levels == null) return null;
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < levels.length; i++) {
+                builder.append("level[")
+                        .append(i)
+                        .append("]=")
+                        .append(levels[i])
+                        .append('\n');
+            }
+            return builder.toString();
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            if (s != null && mViewRef.get() != null) {
+                mViewRef.get().showResult(s);
+            }
+        }
+    }
 }

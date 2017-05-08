@@ -16,6 +16,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 
 import com.cherry.library.ui.view.CountDownView;
 import com.hele.hardware.analyser.base.BaseFragment;
@@ -43,6 +44,8 @@ public class CaptureFragment extends BaseFragment implements CaptureContract.Vie
     ViewGroup captureLayout;
     @BindView(R.id.layout_picture)
     ViewGroup pictureLayout;
+    @BindView(R.id.iv_capture)
+    ImageView captureView;
     @BindView(R.id.stub_result)
     ViewStubCompat resultViewStub;
     @BindView(R.id.count_down_view)
@@ -108,6 +111,8 @@ public class CaptureFragment extends BaseFragment implements CaptureContract.Vie
             countDownView.setVisibility(View.VISIBLE);
             countDownView.setCountDownTime(mHour, mMinute, 0);
             countDownView.start();
+        } else {
+            captureView.setVisibility(View.VISIBLE);
         }
     }
 

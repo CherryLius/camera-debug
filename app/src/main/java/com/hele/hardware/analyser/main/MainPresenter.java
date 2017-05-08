@@ -53,6 +53,7 @@ public class MainPresenter implements MainContract.Presenter {
     @Override
     public void gotoAnalyser() {
         Intent intent = new Intent(mContext, BehaviorActivity.class);
+//        Intent intent = new Intent(mContext, CaptureActivity.class);
         mContext.startActivity(intent);
     }
 

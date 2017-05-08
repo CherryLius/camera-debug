@@ -96,6 +96,7 @@ public class UserInfoPresenter implements UserInfoContract.Presenter {
 
     @Override
     public void onItemClick(Activity activity, int position) {
+        activity.setResult(Activity.RESULT_OK);
         activity.finish();
     }
 }

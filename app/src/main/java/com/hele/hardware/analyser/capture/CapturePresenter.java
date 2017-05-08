@@ -1,6 +1,7 @@
 package com.hele.hardware.analyser.capture;
 
 import android.graphics.Bitmap;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 
 import com.hele.hardware.analyser.camera.ICameraCallback;
@@ -20,12 +21,15 @@ public class CapturePresenter implements CaptureContract.Presenter, ICameraCallb
     private byte[] mLastData;
     private Bitmap mLastBitmap;
 
+    private Handler mHandler;
+
     public CapturePresenter(@NonNull CaptureContract.View view, @NonNull CaptureRenderer renderer) {
         mView = view;
         mView.setPresenter(this);
         mCameraCompact = renderer.getCameraCompat();
         mCameraCompact.setCallback(this);
         renderer.setFilterChangeListener(this);
+        mHandler = new Handler();
     }
 
     @Override
@@ -54,6 +58,13 @@ public class CapturePresenter implements CaptureContract.Presenter, ICameraCallb
             mLastBitmap = bitmap;
         if (data != mLastData)
             mLastData = data;
+
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                savePicture();
+            }
+        }, 500);
     }
 
     @Override
