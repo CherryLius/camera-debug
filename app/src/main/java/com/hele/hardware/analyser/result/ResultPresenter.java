@@ -100,7 +100,7 @@ public class ResultPresenter implements ResultContract.Presenter {
                     mView.showToast("empty path");
                     return;
                 }
-                float[] levels = OpenCVUtil.clipTestPaper(path);
+                float[] levels = OpenCVUtil.clipPaper(path);
                 if (levels == null) return;
                 StringBuilder builder = new StringBuilder();
                 for (int i = 0; i < levels.length; i++) {
@@ -164,7 +164,7 @@ public class ResultPresenter implements ResultContract.Presenter {
                 mViewRef.get().showToast("empty path");
                 return null;
             }
-            float[] levels = OpenCVUtil.clipTestPaper(path);
+            float[] levels = OpenCVUtil.clipPaper(path);
             if (levels == null) return null;
             StringBuilder builder = new StringBuilder();
             for (int i = 0; i < levels.length; i++) {

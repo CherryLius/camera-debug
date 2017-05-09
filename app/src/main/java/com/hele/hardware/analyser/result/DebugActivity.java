@@ -29,7 +29,7 @@ public class DebugActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         tv.setText("开始选择");
-        tv.setTextSize(36);
+        tv.setTextSize(30);
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
