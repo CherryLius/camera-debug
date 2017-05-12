@@ -7,6 +7,7 @@ import android.support.annotation.IdRes;
 import com.hele.hardware.analyser.util.HLog;
 
 import org.opencv.android.Utils;
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfFloat;
 import org.opencv.core.MatOfInt;
@@ -171,28 +172,31 @@ public class OpenCVUtil {
         return null;
     }
 
-    private static int findMaxPixel(Mat hist) {
+    private static double maxLoc(Mat hist) {
         /*
          *  直方图：纵坐标代表每一种颜色值在图像中的像素总数
          *        横坐标代表图像像素种类：颜色值 灰度值
          */
-        double max = 0;
-        int maxPixel = -1;
-        for (int i = 0; i < hist.rows(); i++) {
-            for (int j = 0; j < hist.cols(); j++) {
-                double[] val = hist.get(i, j);
-                if (max < val[0]) {
-                    max = val[0];
-                    maxPixel = i;
-                }
-            }
-        }
-        HLog.e(TAG, "max count=" + max + ",pixel=" + maxPixel);
-        HLog.e(TAG, "hist=" + hist.toString() + ",cols=" + hist.cols() + ",rows=" + hist.rows());
-        return maxPixel;
+        /**
+         *  double max = 0;
+         *  int maxPixel = -1;
+         *  for (int i = 0; i < hist.rows(); i++) {
+         *      for (int j = 0; j < hist.cols(); j++) {
+         *          double[] val = hist.get(i, j);
+         *          if (max < val[0]) {
+         *              max = val[0];
+         *              maxPixel = i;
+         *          }
+         *       }
+         *  }
+         */
+        Core.MinMaxLocResult minMaxLoc = Core.minMaxLoc(hist);
+        HLog.e(TAG, "min:loc=" + minMaxLoc.minLoc + ", val = " + minMaxLoc.minVal
+                + ", max:loc=" + minMaxLoc.maxLoc + ", val=" + minMaxLoc.maxVal);
+        return minMaxLoc.maxLoc.y;
     }
 
-    private static float[] getAverageLevel(Mat img, int bgValue, int total) {
+    private static float[] getAverageLevel(Mat img, double bgValue, int total) {
         float[] avg = new float[img.cols()];
         for (int i = 0; i < img.cols(); i++) {
             for (int j = 0; j < img.rows(); j++) {
@@ -215,7 +219,7 @@ public class OpenCVUtil {
         float[] buffer = new float[256];
         Mat hist = calcHist(img, 256, buffer);
 
-        int bgValue = (hist.rows() - 1) - findMaxPixel(hist);
+        double bgValue = (hist.rows() - 1) - maxLoc(hist);
 
         HLog.i(TAG, "img cols=" + img.cols() + ", rows=" + img.rows());
 
