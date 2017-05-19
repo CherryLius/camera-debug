@@ -155,15 +155,25 @@ public class CameraUtil {
 //        }
 
         // Try to find a size matches aspect ratio and has the largest width
-        if (optimalSize == null)
-            for (Size size : sizes) {
-                double ratio = (double) size.getWidth() / size.getHeight();
-                if (Math.abs(ratio - targetRatio) > ASPECT_TOLERANCE)
-                    continue;
-                if (optimalSize == null || size.getWidth() > optimalSize.getWidth()) {
-                    optimalSize = size;
-                }
+        Size minSize = null;
+        for (Size size : sizes) {
+            double ratio = (double) size.getWidth() / size.getHeight();
+            if (Math.abs(ratio - targetRatio) > ASPECT_TOLERANCE)
+                continue;
+            if (minSize == null) {
+                minSize = size;
+                optimalSize = size;
+            } else if (size.getWidth() < minSize.getWidth()) {
+                optimalSize = minSize;
+                minSize = size;
+            } else if (optimalSize == minSize
+                    || size.getWidth() < optimalSize.getWidth()) {
+                optimalSize = size;
             }
+//            if (optimalSize == null || size.getWidth() < optimalSize.getWidth()) {
+//                optimalSize = size;
+//            }
+        }
 
         // Cannot find one that matches the aspect ratio. This should not
         // happen.

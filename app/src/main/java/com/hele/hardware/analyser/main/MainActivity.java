@@ -1,6 +1,5 @@
 package com.hele.hardware.analyser.main;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -17,7 +16,6 @@ import com.hele.hardware.analyser.R;
 import com.hele.hardware.analyser.adapter.MainCardAdapter;
 import com.hele.hardware.analyser.base.BaseActivity;
 import com.hele.hardware.analyser.model.CardItem;
-import com.hele.hardware.analyser.result.DebugActivity;
 
 import java.util.List;
 
@@ -93,7 +91,7 @@ public class MainActivity extends BaseActivity implements MainContract.View {
         mMainCardAdapter.updateMenu(list);
     }
 
-    @OnClick({R.id.layout_0, R.id.layout_1, R.id.layout_2, R.id.layout_3, R.id.et_search})
+    @OnClick({R.id.layout_0, R.id.layout_1, R.id.layout_2, R.id.et_search})
     void onClick(View v) {
         switch (v.getId()) {
             case R.id.layout_0:
@@ -114,9 +112,6 @@ public class MainActivity extends BaseActivity implements MainContract.View {
                             }
                         })
                         .show();
-                break;
-            case R.id.layout_3:
-                startActivity(new Intent(this, DebugActivity.class));
                 break;
         }
     }

@@ -13,14 +13,15 @@ import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hele.hardware.analyser.R;
 import com.hele.hardware.analyser.base.BaseActivity;
-import com.hele.hardware.analyser.model.ResultInfo;
-import com.hele.hardware.analyser.util.Utils;
+import com.hele.hardware.analyser.model.ImmunityInfo;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import butterknife.BindView;
@@ -44,8 +45,31 @@ public class ResultActivity extends BaseActivity implements ResultContract.View 
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
 
+    @BindView(R.id.tv_date)
+    TextView dateView;
+
+    @BindView(R.id.tv_gray_con)
+    TextView conView;
+    @BindView(R.id.tv_gray_tnl)
+    TextView tnlView;
+    @BindView(R.id.tv_gray_ck_mb)
+    TextView ckMBView;
+    @BindView(R.id.tv_gray_myo)
+    TextView myoView;
+
+    @BindView(R.id.tv_gray_percent_con)
+    TextView conPercentView;
+    @BindView(R.id.tv_gray_percent_tnl)
+    TextView tnlPercentView;
+    @BindView(R.id.tv_gray_percent_ck_mb)
+    TextView ckMBPercentView;
+    @BindView(R.id.tv_gray_percent_myo)
+    TextView myoPercentView;
+
     private ResultContract.Presenter mPresenter;
     private String mPath;
+    private SimpleDateFormat mFormatter;
+    private ImmunityInfo mInfo;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,6 +94,7 @@ public class ResultActivity extends BaseActivity implements ResultContract.View 
 
     void init() {
         new ResultPresenter(this);
+        mFormatter = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
         resultTextView.setMovementMethod(ScrollingMovementMethod.getInstance());
         progressBar.setVisibility(View.VISIBLE);
         resultLayout.setVisibility(View.GONE);
@@ -102,15 +127,21 @@ public class ResultActivity extends BaseActivity implements ResultContract.View 
     }
 
     @Override
-    public void showResult(final String result) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                progressBar.setVisibility(View.GONE);
-                resultLayout.setVisibility(View.VISIBLE);
-                resultTextView.setText(result);
-            }
-        });
+    public void showResult(final ImmunityInfo info) {
+        progressBar.setVisibility(View.GONE);
+        resultLayout.setVisibility(View.VISIBLE);
+        conView.setText(info.getCon() + "");
+        tnlView.setText(info.getTnl() + "");
+        ckMBView.setText(info.getCKMB() + "");
+        myoView.setText(info.getMyo() + "");
+
+        conPercentView.setText(info.getCon() / info.getCon() + "");
+        tnlPercentView.setText(info.getTnl() / info.getCon() + "");
+        ckMBPercentView.setText(info.getCKMB() / info.getCon() + "");
+        myoPercentView.setText(info.getMyo() / info.getCon() + "");
+
+        dateView.setText(mFormatter.format(new Date().getTime()));
+        mInfo = info;
     }
 
     @Override
@@ -127,13 +158,7 @@ public class ResultActivity extends BaseActivity implements ResultContract.View 
     void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_save:
-                ResultInfo info = new ResultInfo();
-                info.setName(Utils.getRandomEnglish());
-                info.setIdentity(Utils.getRandomNumber());
-                info.setPicturePath(mPath);
-                info.setDateTime(new Date().getTime());
-                info.setValue(resultTextView.getText().toString());
-                mPresenter.saveResult(info);
+                mPresenter.saveResult(mPath, mInfo);
                 finish();
                 break;
         }

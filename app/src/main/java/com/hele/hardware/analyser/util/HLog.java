@@ -13,20 +13,40 @@ public class HLog {
         Log.i(TAG + tag, buildMessage(msg));
     }
 
+    public static void i(String tag, String format, Object... args) {
+        i(tag, String.format(format, args));
+    }
+
     public static void d(String tag, String msg) {
         Log.d(TAG + tag, buildMessage(msg));
+    }
+
+    public static void d(String tag, String format, Object... args) {
+        d(tag, String.format(format, args));
     }
 
     public static void v(String tag, String msg) {
         Log.v(TAG + tag, buildMessage(msg));
     }
 
+    public static void v(String tag, String format, Object... args) {
+        v(tag, String.format(format, args));
+    }
+
     public static void w(String tag, String msg) {
         Log.w(TAG + tag, buildMessage(msg));
     }
 
+    public static void w(String tag, String format, Object... args) {
+        w(tag, String.format(format, args));
+    }
+
     public static void e(String tag, String msg) {
         Log.e(TAG + tag, buildMessage(msg));
+    }
+
+    public static void e(String tag, String format, Object... args) {
+        e(tag, String.format(format, args));
     }
 
     public static void e(String tag, String msg, Throwable t) {

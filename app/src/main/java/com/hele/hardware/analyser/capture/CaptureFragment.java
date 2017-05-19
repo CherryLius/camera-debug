@@ -29,6 +29,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
+import cherry.android.permissions.annotations.PermissionDenied;
+import cherry.android.permissions.annotations.PermissionGranted;
+import cherry.android.permissions.annotations.RequestPermission;
 
 import static com.hele.hardware.analyser.common.Constants.PERMISSION_REQUEST_CODE_CAMERA;
 
@@ -119,14 +122,32 @@ public class CaptureFragment extends BaseFragment implements CaptureContract.Vie
     @Override
     public void onResume() {
         super.onResume();
-        if (Utils.checkSelfPermission(getActivity(), Manifest.permission.CAMERA)) {
-            captureRenderer.resume();
-        } else {
-            requestPermissions(new String[]{Manifest.permission.CAMERA},
-                    PERMISSION_REQUEST_CODE_CAMERA);
-        }
+        rendererResume();
         countDownView.resume();
+    }
 
+    @RequestPermission(value = Manifest.permission.CAMERA, requestCode = PERMISSION_REQUEST_CODE_CAMERA)
+    private void rendererResume() {
+        captureRenderer.resume();
+    }
+
+    @PermissionGranted(PERMISSION_REQUEST_CODE_CAMERA)
+    void onPermissionGranted(int requestCode) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE_CAMERA:
+                rendererResume();
+                break;
+        }
+    }
+
+    @PermissionDenied(PERMISSION_REQUEST_CODE_CAMERA)
+    void onPermissionDenied(int requestCode) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE_CAMERA:
+                showToast("没有摄像头权限");
+                getActivity().finish();
+                break;
+        }
     }
 
     @Override
@@ -228,14 +249,6 @@ public class CaptureFragment extends BaseFragment implements CaptureContract.Vie
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case PERMISSION_REQUEST_CODE_CAMERA:
-                if (!Utils.checkPermissionGrantResults(grantResults)) {
-                    showToast("没有摄像头权限");
-                    getActivity().finish();
-                }
-                break;
-        }
     }
 
     public void setCaptureListener(CaptureContract.CaptureListener listener) {

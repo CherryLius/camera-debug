@@ -111,7 +111,8 @@ public class OpenCVUtil {
             } else if (area > maxAreaRect.area()) {
                 secondAreaRect = maxAreaRect;
                 maxAreaRect = tmp;
-            } else if (area > secondAreaRect.area()) {
+            } else if (secondAreaRect.area() == maxAreaRect.area()
+                    || area > secondAreaRect.area()) {
                 secondAreaRect = tmp;
             }
         }
@@ -172,7 +173,7 @@ public class OpenCVUtil {
         return null;
     }
 
-    private static double maxLoc(Mat hist) {
+    private static double histMaxLoc(Mat hist) {
         /*
          *  直方图：纵坐标代表每一种颜色值在图像中的像素总数
          *        横坐标代表图像像素种类：颜色值 灰度值
@@ -219,7 +220,7 @@ public class OpenCVUtil {
         float[] buffer = new float[256];
         Mat hist = calcHist(img, 256, buffer);
 
-        double bgValue = (hist.rows() - 1) - maxLoc(hist);
+        double bgValue = (hist.rows() - 1) - histMaxLoc(hist);
 
         HLog.i(TAG, "img cols=" + img.cols() + ", rows=" + img.rows());
 
@@ -256,7 +257,11 @@ public class OpenCVUtil {
         for (int i = 0; i < weights.length; i++) {
             HLog.e(TAG, "weight=" + weights[i] + ",val=" + weightValues[i]);
         }
-        return weights;
+        float[] result = new float[weightValues.length];
+        for (int i = 0; i < weightValues.length; i++) {
+            result[i] = weightValues[i];
+        }
+        return result;
     }
 
     private static <T> void reverse(T[] array) {

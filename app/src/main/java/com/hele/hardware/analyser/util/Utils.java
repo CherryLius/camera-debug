@@ -6,7 +6,6 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -32,22 +31,6 @@ public class Utils {
     @NonNull
     public static <T> T getSystemService(Context context, @NonNull String serviceName) {
         return (T) context.getSystemService(serviceName);
-    }
-
-    public static boolean checkSelfPermission(Context context, String... permissions) {
-        for (String permission : permissions) {
-            if (ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_DENIED)
-                return false;
-        }
-        return true;
-    }
-
-    public static boolean checkPermissionGrantResults(int[] grantResults) {
-        for (int result : grantResults) {
-            if (result == PackageManager.PERMISSION_DENIED)
-                return false;
-        }
-        return true;
     }
 
     public static void showToastOnUiThread(final Activity activity, final String text) {

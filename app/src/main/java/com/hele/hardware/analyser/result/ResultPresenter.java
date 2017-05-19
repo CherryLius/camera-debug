@@ -1,17 +1,18 @@
 package com.hele.hardware.analyser.result;
 
 import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 import com.hele.hardware.analyser.App;
 import com.hele.hardware.analyser.dao.ResultInfoDaoHelper;
+import com.hele.hardware.analyser.model.ImmunityInfo;
 import com.hele.hardware.analyser.model.ResultInfo;
 import com.hele.hardware.analyser.opencv.OpenCVUtil;
 import com.hele.hardware.analyser.util.HLog;
+import com.hele.hardware.analyser.util.Utils;
 
 import org.opencv.android.InstallCallbackInterface;
 import org.opencv.android.LoaderCallbackInterface;
@@ -19,6 +20,7 @@ import org.opencv.android.OpenCVLoader;
 
 import java.io.File;
 import java.lang.ref.SoftReference;
+import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -34,12 +36,14 @@ public class ResultPresenter implements ResultContract.Presenter {
 
     private ExecutorService mExecutor;
     private AnalyseTask mTask;
-    private HandlerThread mBackgroundThread;
-    private Handler mBackgroundHandler;
+    private Gson mGson;
+//    private HandlerThread mBackgroundThread;
+//    private Handler mBackgroundHandler;
 
     public ResultPresenter(@NonNull ResultContract.View view) {
         mView = view;
         mView.setPresenter(this);
+        mGson = new Gson();
     }
 
     @Override
@@ -77,9 +81,17 @@ public class ResultPresenter implements ResultContract.Presenter {
     }
 
     @Override
-    public void saveResult(ResultInfo info) {
-        ResultInfoDaoHelper.instance().add(info);
+    public void saveResult(String path, ImmunityInfo info) {
+        ResultInfo resultInfo = new ResultInfo();
+        resultInfo.setName(Utils.getRandomEnglish());
+        resultInfo.setIdentity(Utils.getRandomNumber());
+        resultInfo.setPicturePath(path);
+        resultInfo.setDateTime(new Date().getTime());
+        resultInfo.setValue(mGson.toJson(info));
+        ResultInfoDaoHelper.instance().add(resultInfo);
+        mView.showToast("保存成功");
     }
+
 
     private void initOpenCVAsync() {
         if (!OpenCVLoader.initDebug()) {
@@ -91,44 +103,44 @@ public class ResultPresenter implements ResultContract.Presenter {
         }
     }
 
-    private void analyseOnThread(final String path) {
-        mBackgroundHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                File file = new File(path);
-                if (!file.exists()) {
-                    mView.showToast("empty path");
-                    return;
-                }
-                float[] levels = OpenCVUtil.clipPaper(path);
-                if (levels == null) return;
-                StringBuilder builder = new StringBuilder();
-                for (int i = 0; i < levels.length; i++) {
-                    builder.append("level[")
-                            .append(i)
-                            .append("]=")
-                            .append(levels[i])
-                            .append('\n');
-                }
-                mView.showResult(builder.toString());
-            }
-        });
-    }
-
-    private void startBackgroundThread() {
-        mBackgroundThread = new HandlerThread("result");
-        mBackgroundThread.start();
-        mBackgroundHandler = new Handler(mBackgroundThread.getLooper());
-    }
-
-    private void stopBackgroundThread() {
-        if (mBackgroundThread != null) {
-            mBackgroundHandler.removeCallbacksAndMessages(null);
-            mBackgroundThread.quitSafely();
-            mBackgroundThread = null;
-            mBackgroundHandler = null;
-        }
-    }
+//    private void analyseOnThread(final String path) {
+//        mBackgroundHandler.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                File file = new File(path);
+//                if (!file.exists()) {
+//                    mView.showToast("empty path");
+//                    return;
+//                }
+//                float[] levels = OpenCVUtil.clipPaper(path);
+//                if (levels == null) return;
+//                StringBuilder builder = new StringBuilder();
+//                for (int i = 0; i < levels.length; i++) {
+//                    builder.append("level[")
+//                            .append(i)
+//                            .append("]=")
+//                            .append(levels[i])
+//                            .append('\n');
+//                }
+//                mView.showResult(builder.toString());
+//            }
+//        });
+//    }
+//
+//    private void startBackgroundThread() {
+//        mBackgroundThread = new HandlerThread("result");
+//        mBackgroundThread.start();
+//        mBackgroundHandler = new Handler(mBackgroundThread.getLooper());
+//    }
+//
+//    private void stopBackgroundThread() {
+//        if (mBackgroundThread != null) {
+//            mBackgroundHandler.removeCallbacksAndMessages(null);
+//            mBackgroundThread.quitSafely();
+//            mBackgroundThread = null;
+//            mBackgroundHandler = null;
+//        }
+//    }
 
     private LoaderCallbackInterface mLoaderCallback = new LoaderCallbackInterface() {
         @Override
@@ -146,7 +158,7 @@ public class ResultPresenter implements ResultContract.Presenter {
         }
     };
 
-    private class AnalyseTask extends AsyncTask<String, Void, String> {
+    private class AnalyseTask extends AsyncTask<String, Void, ImmunityInfo> {
 
         private SoftReference<ResultContract.View> mViewRef;
 
@@ -155,7 +167,7 @@ public class ResultPresenter implements ResultContract.Presenter {
         }
 
         @Override
-        protected String doInBackground(String... params) {
+        protected ImmunityInfo doInBackground(String... params) {
             if (params == null || params.length == 0)
                 return null;
             String path = params[0];
@@ -166,22 +178,15 @@ public class ResultPresenter implements ResultContract.Presenter {
             }
             float[] levels = OpenCVUtil.clipPaper(path);
             if (levels == null) return null;
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < levels.length; i++) {
-                builder.append("level[")
-                        .append(i)
-                        .append("]=")
-                        .append(levels[i])
-                        .append('\n');
-            }
-            return builder.toString();
+            ImmunityInfo info = new ImmunityInfo(levels[0], levels[1], levels[2], levels[3]);
+            return info;
         }
 
         @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            if (s != null && mViewRef.get() != null) {
-                mViewRef.get().showResult(s);
+        protected void onPostExecute(ImmunityInfo info) {
+            super.onPostExecute(info);
+            if (info != null && mViewRef.get() != null) {
+                mViewRef.get().showResult(info);
             }
         }
     }

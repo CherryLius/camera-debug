@@ -4,7 +4,7 @@ import android.widget.ImageView;
 
 import com.hele.hardware.analyser.base.BasePresenter;
 import com.hele.hardware.analyser.base.BaseView;
-import com.hele.hardware.analyser.model.ResultInfo;
+import com.hele.hardware.analyser.model.ImmunityInfo;
 
 /**
  * Created by Administrator on 2017/4/24.
@@ -13,7 +13,7 @@ import com.hele.hardware.analyser.model.ResultInfo;
 public interface ResultContract {
 
     interface View extends BaseView<Presenter> {
-        void showResult(String result);
+        void showResult(ImmunityInfo result);
 
         void showToast(String text);
     }
@@ -28,7 +28,7 @@ public interface ResultContract {
 
         void analyse(String path);
 
-        void saveResult(ResultInfo info);
+        void saveResult(String path, ImmunityInfo info);
 
     }
 }

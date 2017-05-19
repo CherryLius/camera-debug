@@ -28,5 +28,13 @@
     <string name="label_complete">完成</string>
     <string name="male">男</string>
     <string name="female">女</string>
+    <string name="date">时间:</string>
+    <string name="text_Con">Con:</string>
+    <string name="text_Tnl">Tnl:</string>
+    <string name="text_CK_MB">CK-MB:</string>
+    <string name="text_Myo">Myo:</string>
+    <string name="test_item">测试项:</string>
+    <string name="gray_value">灰度值:</string>
+    <string name="gray_percentage">比重:</string>
 
 </resources>
