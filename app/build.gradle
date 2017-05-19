@@ -52,4 +52,5 @@ dependencies {
     compile 'cherry.android:permissions-api:1.0.0'
     compile 'cherry.android:permissions-annotations:1.0.0'
     apt 'cherry.android:permissions-compiler:1.0.0'
+//    compile project(':permissions-api')
 }

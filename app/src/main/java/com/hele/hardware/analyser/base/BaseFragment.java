@@ -1,6 +1,7 @@
 package com.hele.hardware.analyser.base;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
 import com.hele.hardware.analyser.listener.LifecycleCallback;
@@ -29,6 +30,11 @@ public class BaseFragment extends Fragment {
             lifecycleCallback.onDetachActivity(this);
             lifecycleCallback = null;
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     public boolean onBackPressed() {

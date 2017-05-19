@@ -2,6 +2,7 @@ package com.hele.hardware.analyser.base;
 
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -65,6 +66,11 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected abstract int getToolbarContentLayoutId();
 
     protected abstract String getToolBarTitle();
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
 
     class ContainerHolder {
 

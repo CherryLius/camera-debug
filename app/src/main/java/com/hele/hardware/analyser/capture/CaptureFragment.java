@@ -246,17 +246,11 @@ public class CaptureFragment extends BaseFragment implements CaptureContract.Vie
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
     public void setCaptureListener(CaptureContract.CaptureListener listener) {
         mListener = listener;
         if (mPresenter != null)
             mPresenter.setCaptureListener(listener);
     }
-
 
     private void showTimePicker() {
         if (timePicker == null) {
