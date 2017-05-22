@@ -36,5 +36,8 @@
     <string name="test_item">测试项:</string>
     <string name="gray_value">灰度值:</string>
     <string name="gray_percentage">比重:</string>
+    <string name="title_activity_main2">MainActivity2</string>
+    <string name="title_home">Home</string>
+    <string name="title_android">Android</string>
 
 </resources>

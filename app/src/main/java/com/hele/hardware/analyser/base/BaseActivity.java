@@ -24,11 +24,6 @@ import butterknife.OnClick;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-    @BindView(R.id.tv_toolbar_title)
-    TextView titleView;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,14 +31,15 @@ public abstract class BaseActivity extends AppCompatActivity {
             setContentView(getRootLayoutId());
         } else {
             setContentView(R.layout.activity_base);
-            inflateContent(new ContainerHolder(getWindow().getDecorView()));
+            BaseHolder holder = new BaseHolder(getWindow().getDecorView());
+            inflateContent(holder);
+            setSupportActionBar(holder.toolbar);
+            holder.titleView.setText(getToolBarTitle());
         }
         ButterKnife.bind(this);
-        setSupportActionBar(toolbar);
-        titleView.setText(getToolBarTitle());
     }
 
-    private void inflateContent(ContainerHolder holder) {
+    private void inflateContent(BaseHolder holder) {
         if (getContentLayoutId() > 0) {
             LayoutInflater.from(this).inflate(getContentLayoutId(), holder.contentContainer, true);
         }
@@ -72,14 +68,19 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
-    class ContainerHolder {
+    class BaseHolder {
+
+        @BindView(R.id.toolbar)
+        Toolbar toolbar;
+        @BindView(R.id.tv_toolbar_title)
+        TextView titleView;
 
         @BindView(R.id.toolbar_container)
         LinearLayout toolbarContainer;
         @BindView(R.id.content_container)
         FrameLayout contentContainer;
 
-        ContainerHolder(View rootView) {
+        BaseHolder(View rootView) {
             ButterKnife.bind(this, rootView);
         }
 

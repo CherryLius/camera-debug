@@ -3,18 +3,12 @@ package com.example.test;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.example.test.pinyin.Pinyin;
 import com.ui.picker.TimePicker;
 
 import java.util.Calendar;
-
-import static com.github.promeg.pinyinhelper.Pinyin.init;
-import static com.github.promeg.pinyinhelper.Pinyin.newConfig;
-import static com.github.promeg.pinyinhelper.Pinyin.toPinyin;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -47,32 +41,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(new Intent(this, LoginActivity.class));
                 break;
             case R.id.button5:
-                String s = Pinyin.toPinyin("啊方式打开房间");
-                Log.i("Test", "s=" + s);
-                s = Pinyin.toPinyin("GS");
-                Log.i("Test", "s=" + s);
-                s = Pinyin.toPinyin("式打开房间");
-                Log.i("Test", "s=" + s);
-                s = Pinyin.toPinyin("拗口");
-                Log.i("Test", "s=" + s);
-                s = Pinyin.toPinyin("执拗");
-                Log.i("Test", "s=" + s);
-                s = Pinyin.toPinyin("hg");
-                Log.i("Test", "s=" + s);
-
-                init(newConfig());
-                s = toPinyin("啊方式打开房间", "");
-                Log.i("Test", "s=" + s);
-                s = toPinyin("GS", "");
-                Log.i("Test", "s=" + s);
-                s = toPinyin("式打开房间", "");
-                Log.i("Test", "s=" + s);
-                s = toPinyin("拗口", "");
-                Log.i("Test", "s=" + s);
-                s = toPinyin("执拗", "");
-                Log.i("Test", "s=" + s);
-                s = toPinyin("hg", "");
-                Log.i("Test", "s=" + s);
+                startActivity(new Intent(this, BottomNavigationActivity.class));
+//                String s = Pinyin.toPinyin("啊方式打开房间");
+//                Log.i("Test", "s=" + s);
+//                s = Pinyin.toPinyin("GS");
+//                Log.i("Test", "s=" + s);
+//                s = Pinyin.toPinyin("式打开房间");
+//                Log.i("Test", "s=" + s);
+//                s = Pinyin.toPinyin("拗口");
+//                Log.i("Test", "s=" + s);
+//                s = Pinyin.toPinyin("执拗");
+//                Log.i("Test", "s=" + s);
+//                s = Pinyin.toPinyin("hg");
+//                Log.i("Test", "s=" + s);
+//
+//                init(newConfig());
+//                s = toPinyin("啊方式打开房间", "");
+//                Log.i("Test", "s=" + s);
+//                s = toPinyin("GS", "");
+//                Log.i("Test", "s=" + s);
+//                s = toPinyin("式打开房间", "");
+//                Log.i("Test", "s=" + s);
+//                s = toPinyin("拗口", "");
+//                Log.i("Test", "s=" + s);
+//                s = toPinyin("执拗", "");
+//                Log.i("Test", "s=" + s);
+//                s = toPinyin("hg", "");
+//                Log.i("Test", "s=" + s);
                 break;
             case R.id.button6:
                 startActivity(new Intent(this, MediaPlayActivity.class));

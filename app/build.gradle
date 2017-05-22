@@ -30,13 +30,14 @@ greendao {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile project(':library-ui')
     compile project(':pickerview')
     compile project(':openCVLibrary320')
+
+    //    compile project(':permissions-api')
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.android.support:design:26.0.0-alpha1'
@@ -46,11 +47,10 @@ dependencies {
     compile 'org.greenrobot:greendao:3.2.2'
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.github.promeg:tinypinyin:2.0.3'
-    apt 'com.jakewharton:butterknife-compiler:8.5.1'
     compile 'com.google.code.gson:gson:2.8.0'
-
     compile 'cherry.android:permissions-api:1.0.0'
     compile 'cherry.android:permissions-annotations:1.0.0'
+    testCompile 'junit:junit:4.12'
+    apt 'com.jakewharton:butterknife-compiler:8.5.1'
     apt 'cherry.android:permissions-compiler:1.0.0'
-//    compile project(':permissions-api')
 }
