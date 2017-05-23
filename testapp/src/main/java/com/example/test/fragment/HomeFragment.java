@@ -10,7 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +40,6 @@ public class HomeFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        Log.i("Test", "Home onAttach");
         if (context instanceof Activity) {
             AppCompatActivity activity = (AppCompatActivity) context;
             activity.setSupportActionBar(mToolbar);
@@ -51,7 +49,6 @@ public class HomeFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        Log.i("Test", "Home onDetach");
         Context context = getContext();
         if (context instanceof Activity) {
             AppCompatActivity activity = (AppCompatActivity) context;

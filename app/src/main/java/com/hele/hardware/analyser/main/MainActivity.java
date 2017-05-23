@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.MenuItem;
 
 import com.hele.hardware.analyser.R;
@@ -52,7 +53,7 @@ public class MainActivity extends BaseActivity implements BottomNavigationView.O
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.navigation_home:
-                showDefaultFragment();
+                showFragment(0);
                 return true;
             case R.id.navigation_android_0:
                 showFragment(1);
@@ -71,12 +72,18 @@ public class MainActivity extends BaseActivity implements BottomNavigationView.O
         mBottomFragmentList.add(new EmptyFragment());
     }
 
-    private void showDefaultFragment() {
-        showFragment(0);
-    }
-
     private void showFragment(int position) {
         Fragment f = mBottomFragmentList.get(position);
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, f).show(f).commit();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        if (!f.isAdded()) {
+            ft.add(R.id.fragment_container, f);
+        }
+        //hide others
+        for (int i = 0; i < mBottomFragmentList.size(); i++) {
+            if (i != position) {
+                ft.hide(mBottomFragmentList.get(i));
+            }
+        }
+        ft.show(f).commit();
     }
 }
