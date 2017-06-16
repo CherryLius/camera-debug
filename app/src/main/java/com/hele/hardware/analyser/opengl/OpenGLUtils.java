@@ -7,7 +7,7 @@ import android.opengl.GLUtils;
 import android.support.annotation.NonNull;
 import android.support.annotation.RawRes;
 
-import com.hele.hardware.analyser.util.HLog;
+import com.hele.hardware.analyser.util.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -74,7 +74,7 @@ public class OpenGLUtils {
         glLinkProgram(iProgramId);
         glGetProgramiv(iProgramId, GL_LINK_STATUS, link, 0);
         if (link[0] <= 0) {
-            HLog.e(TAG, "Link Program Failed.");
+            Logger.e(TAG, "Link Program Failed.");
             return 0;
         }
 
@@ -97,7 +97,7 @@ public class OpenGLUtils {
         glCompileShader(iShader);
         glGetShaderiv(iShader, GL_COMPILE_STATUS, compiled, 0);
         if (compiled[0] == 0) {
-            HLog.e(TAG, " Failed : Compilation\n" + glGetShaderInfoLog(iShader));
+            Logger.e(TAG, " Failed : Compilation\n" + glGetShaderInfoLog(iShader));
             return 0;
         }
         return iShader;

@@ -106,7 +106,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
         e.printStackTrace(pw);
         pw.close();
         mBuilder.append(writer.toString()).append('\n');
-        HLog.e(TAG, mBuilder.toString());
+        Logger.e(TAG, mBuilder.toString());
         String fileName = "crashLog.log";
         FileUtils.write2file(new File(mCrashFile, fileName).getAbsolutePath(), mBuilder.toString());
     }

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.IdRes;
 
-import com.hele.hardware.analyser.util.HLog;
+import com.hele.hardware.analyser.util.Logger;
 
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
@@ -68,7 +68,7 @@ public class OpenCVUtil {
     }
 
     /**
-     * 找多边形
+     * 找轮廓
      */
     public static void findContours(Mat mat, List<MatOfPoint> points) {
         Imgproc.findContours(mat, points, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
@@ -123,12 +123,9 @@ public class OpenCVUtil {
      * 直方图
      */
 
-    public static Mat calcHist(Mat src, int histSize, float[] buffer) {
+    public static Mat calcHist(Mat src, int histSize) {
         Mat hist = new Mat();
         Imgproc.calcHist(Arrays.asList(src), new MatOfInt(0), new Mat(), hist, new MatOfInt(histSize), new MatOfFloat(0, histSize));
-//        Size sizeRgba = src.size();
-//        Core.normalize(hist, hist, sizeRgba.height / 2, 0, Core.NORM_INF);
-//        hist.get(0, 0, buffer);
         return hist;
     }
 
@@ -143,34 +140,47 @@ public class OpenCVUtil {
 
 
     public static float[] clipPaper(String path, int block, int C) {
-        List<MatOfPoint> points = new ArrayList<>();
-        Mat img = rgb2gray(path);
-        Mat dst = new Mat();
+        //灰度图
+        Mat grayMat = rgb2gray(path);
 
-        adaptiveThreshold(img, dst, block, C);
-        findContours(dst, points);
+        //二值化
+        Mat dst = new Mat();
+        adaptiveThreshold(grayMat, dst, block, C);
+        //裁切
+        grayMat = clip2clip(grayMat, dst);
+
+        //灰度直方图
+        Mat hist = calcHist(grayMat, 256);
+        //背景阈值
+        double bgValue = 255 - histMaxLoc(hist);
+        return calcGrayLevel(grayMat, averageGray(grayMat, bgValue), 4, false);
+    }
+
+    //裁切
+    public static Mat clip2clip(Mat srcMat, Mat thresholdMat) {
+        List<MatOfPoint> points = new ArrayList<>();
+        findContours(thresholdMat, points);
 
         //裁切背景
         Rect rect = findBoundRect(points);
         if (rect != null) {
-            dst = new Mat(dst, rect);
-            img = new Mat(img, rect);
-            //找浓度区域
-            points.clear();
-            findContours(dst, points);
-
-            rect = findRect(points);
-            //二次裁切
-            if (rect != null) {
-                rect = new Rect(rect.x + (int) (rect.width * 0.08f),
-                        rect.y + (int) (rect.height * 0.13f),
-                        (int) (rect.width * 0.84f),
-                        (int) (rect.height * 0.74f));
-                img = new Mat(img, rect);
-                return calcGrayLevel(img);
-            }
+            srcMat = new Mat(srcMat, rect);
+            thresholdMat = new Mat(thresholdMat, rect);
         }
-        return null;
+        //找浓度区域
+        points.clear();
+        findContours(thresholdMat, points);
+
+        rect = findRect(points);
+        //二次裁切 大小根据最终拍摄格式来调整
+        if (rect != null) {
+            rect = new Rect(rect.x + (int) (rect.width * 0.2f),
+                    rect.y + (int) (rect.height * 0.2f),
+                    (int) (rect.width * 0.6f),
+                    (int) (rect.height * 0.6f));
+            srcMat = new Mat(srcMat, rect);
+        }
+        return srcMat;
     }
 
     private static double histMaxLoc(Mat hist) {
@@ -178,31 +188,19 @@ public class OpenCVUtil {
          *  直方图：纵坐标代表每一种颜色值在图像中的像素总数
          *        横坐标代表图像像素种类：颜色值 灰度值
          */
-        /**
-         *  double max = 0;
-         *  int maxPixel = -1;
-         *  for (int i = 0; i < hist.rows(); i++) {
-         *      for (int j = 0; j < hist.cols(); j++) {
-         *          double[] val = hist.get(i, j);
-         *          if (max < val[0]) {
-         *              max = val[0];
-         *              maxPixel = i;
-         *          }
-         *       }
-         *  }
-         */
         Core.MinMaxLocResult minMaxLoc = Core.minMaxLoc(hist);
-        HLog.e(TAG, "min:loc=" + minMaxLoc.minLoc + ", val = " + minMaxLoc.minVal
+        Logger.e(TAG, "min:loc=" + minMaxLoc.minLoc + ", val = " + minMaxLoc.minVal
                 + ", max:loc=" + minMaxLoc.maxLoc + ", val=" + minMaxLoc.maxVal);
         return minMaxLoc.maxLoc.y;
     }
 
-    private static float[] getAverageLevel(Mat img, double bgValue, int total) {
+    //纵向灰度平均值
+    private static float[] averageGray(Mat img, double bgValue) {
         float[] avg = new float[img.cols()];
         for (int i = 0; i < img.cols(); i++) {
             for (int j = 0; j < img.rows(); j++) {
                 double[] val = img.get(j, i);
-                avg[i] += (total - val[0]);
+                avg[i] += (255 - val[0]);
             }
             avg[i] /= img.rows();
             if (avg[i] < bgValue) {
@@ -210,32 +208,24 @@ public class OpenCVUtil {
             } else {
                 avg[i] -= bgValue;
             }
-            HLog.e(TAG, "avg[" + i + "]=" + avg[i]);
+            Logger.e(TAG, "avg[" + i + "]=" + avg[i]);
         }
         return avg;
     }
 
-    private static float[] calcGrayLevel(Mat img) {
-        //计算灰度值
-        float[] buffer = new float[256];
-        Mat hist = calcHist(img, 256, buffer);
+    //计算灰度值
+    private static float[] calcGrayLevel(Mat img, float[] avg, int count, boolean reverse) {
 
-        double bgValue = (hist.rows() - 1) - histMaxLoc(hist);
-
-        HLog.i(TAG, "img cols=" + img.cols() + ", rows=" + img.rows());
-
-        float[] avg = getAverageLevel(img, bgValue, (hist.rows() - 1));
-
-        int wSize = 15;
-        Float[] weightValues = new Float[4];
-        float[] weights = new float[4];
-        for (int i = 0; i < 4; i++) {
+        int wSize = 12;
+        Float[] weightValues = new Float[count];
+        float[] weights = new float[count];
+        for (int i = 0; i < count; i++) {
             float maxVal = 0.0f;
-            for (int j = 0; j < (img.cols() / 4); j++) {
-                if (j + wSize >= img.cols() / 4)
+            for (int j = 0; j < (img.cols() / count); j++) {
+                if (j + wSize >= img.cols() / count)
                     break;
                 float val = .0f;
-                int x = i * img.cols() / 4 + j;
+                int x = i * img.cols() / count + j;
                 for (int k = 0; k < wSize; k++) {
                     val += avg[x + k];
                 }
@@ -246,7 +236,7 @@ public class OpenCVUtil {
             //weights[i] = maxVal / weightValues[0];
         }
 
-        if (weightValues[0] < weightValues[weightValues.length - 1]) {
+        if (reverse) {
             reverse(weightValues);
         }
 
@@ -255,7 +245,7 @@ public class OpenCVUtil {
         }
 
         for (int i = 0; i < weights.length; i++) {
-            HLog.e(TAG, "weight=" + weights[i] + ",val=" + weightValues[i]);
+            Logger.e(TAG, "weight=" + weights[i] + ",val=" + weightValues[i]);
         }
         float[] result = new float[weightValues.length];
         for (int i = 0; i < weightValues.length; i++) {

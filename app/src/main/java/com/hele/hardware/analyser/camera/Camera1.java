@@ -8,7 +8,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.util.Size;
 
-import com.hele.hardware.analyser.util.HLog;
+import com.hele.hardware.analyser.util.Logger;
 
 import java.io.IOException;
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.List;
  * Created by Administrator on 2017/4/6.
  */
 
-public class Camera1 implements IFunction {
+public class Camera1 implements ICamera {
     private static final String TAG = "Camera1";
 
     private Context mContext;
@@ -146,7 +146,7 @@ public class Camera1 implements IFunction {
                 cameraSizesToArray(mParameters.getSupportedPictureSizes()),
                 screenRatio, 640, 480);
         mParameters.setPictureSize(pictureSize.getWidth(), pictureSize.getHeight());
-        HLog.e(TAG, "optimal pic size: " + pictureSize.getWidth() + "x" + pictureSize.getHeight());
+        Logger.e(TAG, "optimal pic size: " + pictureSize.getWidth() + "x" + pictureSize.getHeight());
     }
 
     @NonNull

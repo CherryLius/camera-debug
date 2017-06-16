@@ -4,12 +4,12 @@ apply plugin: 'org.greenrobot.greendao'
 apply plugin: 'permissions.plugin'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
     defaultConfig {
         applicationId "com.hele.hardware.analyser"
-        minSdkVersion 21
-        targetSdkVersion 25
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -38,19 +38,26 @@ dependencies {
     compile project(':openCVLibrary320')
 
     //    compile project(':permissions-api')
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support:support-v4:25.3.1'
-    compile 'com.android.support:design:26.0.0-alpha1'
-    compile 'com.jakewharton:butterknife-annotations:8.5.1'
-    compile 'com.jakewharton:butterknife:8.5.1'
-    compile 'com.android.support:cardview-v7:26.0.0-alpha1'
+    compile "com.android.support:appcompat-v7:${rootProject.ext.supportVersion}"
+    compile "com.android.support:support-v4:${rootProject.ext.supportVersion}"
+    compile "com.android.support:design:${rootProject.ext.supportVersion}"
+    compile "com.android.support:cardview-v7:${rootProject.ext.supportVersion}"
+
+    compile "com.jakewharton:butterknife-annotations:${rootProject.ext.butterknifeVersion}"
+    compile "com.jakewharton:butterknife:${rootProject.ext.butterknifeVersion}"
+    apt "com.jakewharton:butterknife-compiler:${rootProject.ext.butterknifeVersion}"
+
     compile 'org.greenrobot:greendao:3.2.2'
+
     compile 'com.github.bumptech.glide:glide:3.7.0'
+
     compile 'com.github.promeg:tinypinyin:2.0.3'
+
     compile 'com.google.code.gson:gson:2.8.0'
+
     compile 'cherry.android:permissions-api:1.0.0'
     compile 'cherry.android:permissions-annotations:1.0.0'
-    testCompile 'junit:junit:4.12'
-    apt 'com.jakewharton:butterknife-compiler:8.5.1'
     apt 'cherry.android:permissions-compiler:1.0.0'
+
+    testCompile 'junit:junit:4.12'
 }

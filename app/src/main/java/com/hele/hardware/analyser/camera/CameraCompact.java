@@ -11,7 +11,7 @@ import android.os.HandlerThread;
  */
 
 public class CameraCompact {
-    private IFunction mFunction;
+    private ICamera mFunction;
     private HandlerThread mBackgroundThread;
     private Handler mBackgroundHandler;
 
@@ -59,7 +59,7 @@ public class CameraCompact {
         return mFunction.isFrontCamera();
     }
 
-    public IFunction getFunction() {
+    public ICamera getFunction() {
         return mFunction;
     }
 

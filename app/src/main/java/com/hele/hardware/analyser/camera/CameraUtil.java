@@ -6,7 +6,7 @@ import android.util.Size;
 import android.view.Display;
 import android.view.WindowManager;
 
-import com.hele.hardware.analyser.util.HLog;
+import com.hele.hardware.analyser.util.Logger;
 import com.hele.hardware.analyser.util.Utils;
 
 /**
@@ -34,7 +34,7 @@ public class CameraUtil {
             } else {
                 fullscreen = (double) point.y / point.x;
             }
-            HLog.i(TAG, "fullscreen = " + fullscreen + " x = " + point.x + " y = " + point.y);
+            Logger.i(TAG, "fullscreen = " + fullscreen + " x = " + point.x + " y = " + point.y);
             for (int i = 0; i < RATIOS.length; i++) {
                 if (Math.abs(RATIOS[i] - fullscreen) < Math.abs(fullscreen - find)) {
                     find = RATIOS[i];
@@ -42,13 +42,13 @@ public class CameraUtil {
             }
             for (Size size : choiceSizes) {
                 if (toleranceRatio(find, (double) size.getWidth() / size.getHeight())) {
-                    HLog.i(TAG, "findFullscreenRatio(" + choiceSizes + ") return " + find);
+                    Logger.i(TAG, "findFullscreenRatio(" + choiceSizes + ") return " + find);
                     return find;
                 }
             }
             find = 4d / 3;
         }
-        HLog.d(TAG, "findFullscreenRatio(" + choiceSizes + ") return " + find);
+        Logger.d(TAG, "findFullscreenRatio(" + choiceSizes + ") return " + find);
         return find;
     }
 
@@ -57,7 +57,7 @@ public class CameraUtil {
         if (candidate > 0) {
             tolerance = Math.abs(target - candidate) <= ASPECT_TOLERANCE;
         }
-        HLog.d(TAG, "toleranceRatio(" + target + ", " + candidate + ") return " + tolerance);
+        Logger.d(TAG, "toleranceRatio(" + target + ", " + candidate + ") return " + tolerance);
         return tolerance;
     }
 
@@ -95,7 +95,7 @@ public class CameraUtil {
                     minAspectio = aspectRatio;
                 }
             }
-            HLog.d(TAG, "getOptimalPreviewSize(" + targetRatio + ") minAspectio=" + minAspectio);
+            Logger.d(TAG, "getOptimalPreviewSize(" + targetRatio + ") minAspectio=" + minAspectio);
             targetRatio = minAspectio;
         }
 
@@ -122,7 +122,7 @@ public class CameraUtil {
         // / M: This will happen when native return video size and wallpaper
         // want to get specified ratio.
         if (optimalSize == null) {
-            HLog.w(TAG, "No preview size match the aspect ratio" + targetRatio + ","
+            Logger.w(TAG, "No preview size match the aspect ratio" + targetRatio + ","
                     + "then use the standard(4:3) preview size");
             minDiff = Double.MAX_VALUE;
             targetRatio = Double.parseDouble("1.3333");

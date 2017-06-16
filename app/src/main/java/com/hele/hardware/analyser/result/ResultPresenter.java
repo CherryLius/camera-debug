@@ -11,7 +11,7 @@ import com.hele.hardware.analyser.dao.ResultInfoDaoHelper;
 import com.hele.hardware.analyser.model.ImmunityInfo;
 import com.hele.hardware.analyser.model.ResultInfo;
 import com.hele.hardware.analyser.opencv.OpenCVUtil;
-import com.hele.hardware.analyser.util.HLog;
+import com.hele.hardware.analyser.util.Logger;
 import com.hele.hardware.analyser.util.Utils;
 
 import org.opencv.android.InstallCallbackInterface;
@@ -95,10 +95,10 @@ public class ResultPresenter implements ResultContract.Presenter {
 
     private void initOpenCVAsync() {
         if (!OpenCVLoader.initDebug()) {
-            HLog.d(TAG, "Internal OpenCV library not found. Using OpenCV Manager for initialization");
+            Logger.d(TAG, "Internal OpenCV library not found. Using OpenCV Manager for initialization");
             OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_2_0, App.getContext(), mLoaderCallback);
         } else {
-            HLog.d(TAG, "OpenCV library found inside package. Using it!");
+            Logger.d(TAG, "OpenCV library found inside package. Using it!");
             mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
         }
     }
@@ -147,7 +147,7 @@ public class ResultPresenter implements ResultContract.Presenter {
         public void onManagerConnected(int status) {
             switch (status) {
                 case LoaderCallbackInterface.SUCCESS:
-                    HLog.i(TAG, "OpenCV loaded successfully");
+                    Logger.i(TAG, "OpenCV loaded successfully");
                     break;
             }
         }

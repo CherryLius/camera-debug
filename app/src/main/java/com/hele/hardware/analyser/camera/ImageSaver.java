@@ -16,7 +16,7 @@
 //import android.util.DisplayMetrics;
 //
 //import com.hele.hardware.analyser.util.FileUtils;
-//import com.hele.hardware.analyser.util.HLog;
+//import com.hele.hardware.analyser.util.Logger;
 //
 //import java.io.ByteArrayOutputStream;
 //import java.io.File;
@@ -48,19 +48,19 @@
 //     */
 //    private Bitmap mBitmap;
 //
-//    private IFunction mFunction;
+//    private ICamera mFunction;
 //
-//    public ImageSaver(Context context, byte[] data, IFunction function) {
+//    public ImageSaver(Context context, byte[] data, ICamera function) {
 //        init(context, function);
 //        mData = data;
 //    }
 //
-//    public ImageSaver(Context context, Image image, IFunction function) {
+//    public ImageSaver(Context context, Image image, ICamera function) {
 //        init(context, function);
 //        mImage = image;
 //    }
 //
-//    private void init(Context context, IFunction function) {
+//    private void init(Context context, ICamera function) {
 //        mContext = context;
 //        mFunction = function;
 //
@@ -111,10 +111,10 @@
 //            }
 //        } catch (FileNotFoundException e) {
 //            e.printStackTrace();
-//            HLog.e(TAG, "FileNotFound", e);
+//            Logger.e(TAG, "FileNotFound", e);
 //        } catch (IOException e) {
 //            e.printStackTrace();
-//            HLog.e(TAG, "IOException", e);
+//            Logger.e(TAG, "IOException", e);
 //        } finally {
 //            if (mImage != null)
 //                mImage.close();
@@ -131,7 +131,7 @@
 //        MediaScannerConnection.scanFile(mContext, path, null, new MediaScannerConnection.OnScanCompletedListener() {
 //            @Override
 //            public void onScanCompleted(String path, Uri uri) {
-//                HLog.d(TAG, "scan file !!!!!!!!!!!!");
+//                Logger.d(TAG, "scan file !!!!!!!!!!!!");
 //            }
 //        });
 //    }
@@ -150,7 +150,7 @@
 //        BitmapFactory.Options options = new BitmapFactory.Options();
 //        options.inJustDecodeBounds = true;
 //        BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
-//        HLog.d(TAG, "options: " + options.outWidth + "x" + options.outHeight);
+//        Logger.d(TAG, "options: " + options.outWidth + "x" + options.outHeight);
 //
 //        DisplayMetrics dm = context.getResources().getDisplayMetrics();
 //        int targetDensityDpi = dm.densityDpi;
@@ -160,7 +160,7 @@
 //
 //        double xScale = options.outWidth / (float) expectW;
 //        double yScale = options.outHeight / (float) expectH;
-//        HLog.d(TAG, "xScale=" + xScale + ",yScale=" + yScale
+//        Logger.d(TAG, "xScale=" + xScale + ",yScale=" + yScale
 //                + ",targetDensity=" + targetDensityDpi);
 //
 //        options.inTargetDensity = targetDensityDpi;
@@ -183,7 +183,7 @@
 //                inSampleSize *= 2;
 //            }
 //        }
-//        HLog.i(TAG, "inSampleSize=" + inSampleSize);
+//        Logger.i(TAG, "inSampleSize=" + inSampleSize);
 //        return inSampleSize;
 //    }
 //}

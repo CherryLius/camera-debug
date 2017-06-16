@@ -15,7 +15,7 @@ import com.hele.hardware.analyser.capture.filter.YUVFilter;
 import com.hele.hardware.analyser.opengl.GLRotation;
 import com.hele.hardware.analyser.opengl.OpenGLUtils;
 import com.hele.hardware.analyser.opengl.Rotation;
-import com.hele.hardware.analyser.util.HLog;
+import com.hele.hardware.analyser.util.Logger;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -69,7 +69,7 @@ public class CaptureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        HLog.i(TAG, "onSurfaceCreated");
+        Logger.i(TAG, "onSurfaceCreated");
         GLES20.glDisable(GLES20.GL_DITHER);
         GLES20.glClearColor(0, 0, 0, 0);
         GLES20.glEnable(GLES20.GL_CULL_FACE);
@@ -89,7 +89,7 @@ public class CaptureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
         if (mState == STATE_PICTURE) {
             int textureId = OpenGLUtils.loadTexture(mBitmap, OpenGLUtils.NO_TEXTURE);
-            HLog.e(TAG, "draw picture : " + textureId + ", bm=" + mBitmap);
+            Logger.e(TAG, "draw picture : " + textureId + ", bm=" + mBitmap);
             mFilter.render(textureId, null);
         } else if (mState == STATE_CAPTURE) {
             if (mSurfaceTexture != null) {
@@ -105,7 +105,7 @@ public class CaptureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
         mGLSurfaceView.onResume();
         mCameraCompact.start();
         boolean flipHorizontal = mCameraCompact.isFrontCamera();
-        HLog.d(TAG, "orientation=" + mCameraCompact.getOrientation());
+        Logger.d(TAG, "orientation=" + mCameraCompact.getOrientation());
         adjustPosition(mCameraCompact.getOrientation(), flipHorizontal, !flipHorizontal);
     }
 
@@ -139,7 +139,7 @@ public class CaptureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
     }
 
     public void setFilter(final int state) {
-        HLog.i(TAG, "setFilter");
+        Logger.i(TAG, "setFilter");
         if (mFilterChangeListener != null && mState != state)
             mFilterChangeListener.onFilterChanged(state);
 
@@ -176,7 +176,7 @@ public class CaptureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
 
     private void adjustPosition(int orientation, boolean flipHorizontal, boolean flipVertical) {
         Rotation rotation = Rotation.valueOf(orientation);
-        HLog.i(TAG, "[adjustPosition] orientation=" + orientation + ",rotation=" + rotation);
+        Logger.i(TAG, "[adjustPosition] orientation=" + orientation + ",rotation=" + rotation);
         float[] textureCords = GLRotation.getRotation(rotation, flipHorizontal, flipVertical);
         mFilter.updateTexture(textureCords);
     }
@@ -196,7 +196,7 @@ public class CaptureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
     }
 
     private void recycle() {
-        HLog.i(TAG, "recycle bitmap");
+        Logger.i(TAG, "recycle bitmap");
         if (mBitmap != null) {
             if (!mBitmap.isRecycled())
                 mBitmap.recycle();

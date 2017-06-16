@@ -7,7 +7,7 @@ import android.os.Handler;
  * Created by Administrator on 2017/4/6.
  */
 
-public interface IFunction {
+public interface ICamera {
     void openCamera(Handler handler);
 
     void closeCamera();

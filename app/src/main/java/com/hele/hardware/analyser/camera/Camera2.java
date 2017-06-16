@@ -22,7 +22,7 @@ import android.util.SparseIntArray;
 import android.view.Surface;
 import android.view.WindowManager;
 
-import com.hele.hardware.analyser.util.HLog;
+import com.hele.hardware.analyser.util.Logger;
 import com.hele.hardware.analyser.util.Utils;
 
 import java.util.Arrays;
@@ -31,7 +31,7 @@ import java.util.Arrays;
  * Created by Administrator on 2017/4/6.
  */
 
-public class Camera2 extends CameraDevice.StateCallback implements IFunction, ImageReader.OnImageAvailableListener {
+public class Camera2 extends CameraDevice.StateCallback implements ICamera, ImageReader.OnImageAvailableListener {
     private static final String TAG = "Camera2";
 
     /**
@@ -71,7 +71,7 @@ public class Camera2 extends CameraDevice.StateCallback implements IFunction, Im
     public void openCamera(Handler handler) {
         try {
             if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                HLog.e(TAG, "ACCESS CAMERA FAILED!" + ActivityCompat.checkSelfPermission(mContext, Manifest.permission.CAMERA));
+                Logger.e(TAG, "ACCESS CAMERA FAILED!" + ActivityCompat.checkSelfPermission(mContext, Manifest.permission.CAMERA));
                 return;
             }
             mBackgroundHandler = handler;
@@ -81,7 +81,7 @@ public class Camera2 extends CameraDevice.StateCallback implements IFunction, Im
 
             double screenRatio = CameraUtil.findFullscreenRatio(mContext, sizes);
             Size picSize = CameraUtil.getOptimalPictureSize(sizes, screenRatio, 640, 480);
-            HLog.i(TAG, "picture Size: " + picSize.getWidth() + "x" + picSize.getHeight());
+            Logger.i(TAG, "picture Size: " + picSize.getWidth() + "x" + picSize.getHeight());
             mImageReader = ImageReader.newInstance(picSize.getWidth(), picSize.getHeight(), ImageFormat.JPEG, 1);
             mImageReader.setOnImageAvailableListener(this, mBackgroundHandler);
             mCameraManager.openCamera(mCameraId + "", this, mBackgroundHandler);
@@ -110,7 +110,7 @@ public class Camera2 extends CameraDevice.StateCallback implements IFunction, Im
     @Override
     public void capture() {
         if (mCamera == null) {
-            HLog.e(TAG, "CameraDevice is null");
+            Logger.e(TAG, "CameraDevice is null");
             return;
         }
         try {
@@ -132,7 +132,7 @@ public class Camera2 extends CameraDevice.StateCallback implements IFunction, Im
             //rotation
             WindowManager wm = Utils.getSystemService(mContext, Context.WINDOW_SERVICE);
             int rotation = wm.getDefaultDisplay().getRotation();
-            HLog.e(TAG, "display rotation=" + rotation);
+            Logger.e(TAG, "display rotation=" + rotation);
             requestBuilder.set(CaptureRequest.JPEG_ORIENTATION, getOrientation(rotation));
 
             mCaptureRequest = requestBuilder.build();
@@ -141,7 +141,7 @@ public class Camera2 extends CameraDevice.StateCallback implements IFunction, Im
                 @Override
                 public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
                     super.onCaptureCompleted(session, request, result);
-                    HLog.e(TAG, "onCaptureCompleted");
+                    Logger.e(TAG, "onCaptureCompleted");
                 }
             }, mBackgroundHandler);
         } catch (CameraAccessException e) {
@@ -162,7 +162,7 @@ public class Camera2 extends CameraDevice.StateCallback implements IFunction, Im
                 @Override
                 public void onConfigured(@NonNull CameraCaptureSession session) {
                     if (mCamera == null) {
-                        HLog.e(TAG, "CameraDevice is null");
+                        Logger.e(TAG, "CameraDevice is null");
                         return;
                     }
                     mCaptureSession = session;
@@ -180,7 +180,7 @@ public class Camera2 extends CameraDevice.StateCallback implements IFunction, Im
 
                 @Override
                 public void onConfigureFailed(@NonNull CameraCaptureSession session) {
-                    HLog.i(TAG, "configure camera failed.");
+                    Logger.i(TAG, "configure camera failed.");
                 }
             }, mBackgroundHandler);
         } catch (CameraAccessException e) {
@@ -205,7 +205,7 @@ public class Camera2 extends CameraDevice.StateCallback implements IFunction, Im
             Size[] sizes = map.getOutputSizes(SurfaceTexture.class);
             double screenRatio = CameraUtil.findFullscreenRatio(mContext, sizes);
             Size previewSize = CameraUtil.getOptimalPreviewSize(mContext, sizes, screenRatio, false);
-            HLog.e(TAG, "previewSize: " + previewSize);
+            Logger.e(TAG, "previewSize: " + previewSize);
             texture.setDefaultBufferSize(previewSize.getWidth(), previewSize.getHeight());
             mSurface = new Surface(texture);
         }
@@ -252,7 +252,7 @@ public class Camera2 extends CameraDevice.StateCallback implements IFunction, Im
     @Override
     public void onError(@NonNull CameraDevice camera, int error) {
         closeCamera();
-        HLog.e(TAG, "open Camera err: " + error);
+        Logger.e(TAG, "open Camera err: " + error);
     }
 
     /**
@@ -266,7 +266,7 @@ public class Camera2 extends CameraDevice.StateCallback implements IFunction, Im
         // We have to take that into account and rotate JPEG properly.
         // For devices with orientation of 90, we simply return our mapping from ORIENTATIONS.
         // For devices with orientation of 270, we need to rotate the JPEG 180 degrees.
-        HLog.e(TAG, "getPicOrientation=" + ((ORIENTATIONS.get(rotation) + getSensorOrientation() + 270) % 360));
+        Logger.e(TAG, "getPicOrientation=" + ((ORIENTATIONS.get(rotation) + getSensorOrientation() + 270) % 360));
         return (ORIENTATIONS.get(rotation) + getSensorOrientation() + 270) % 360;
     }
 
@@ -285,7 +285,7 @@ public class Camera2 extends CameraDevice.StateCallback implements IFunction, Im
         try {
             String[] cameraIdList = mCameraManager.getCameraIdList();
             for (String cameraId : cameraIdList) {
-                HLog.e(TAG, " cameraId= " + cameraId);
+                Logger.e(TAG, " cameraId= " + cameraId);
                 if (!cameraId.equals(mCameraId + ""))
                     continue;
                 CameraCharacteristics characteristics = mCameraManager.getCameraCharacteristics(cameraId);
@@ -302,12 +302,12 @@ public class Camera2 extends CameraDevice.StateCallback implements IFunction, Im
             String[] cameraIdList = mCameraManager.getCameraIdList();
             for (String cameraId :
                     cameraIdList) {
-                HLog.e(TAG, " cameraId= " + cameraId);
+                Logger.e(TAG, " cameraId= " + cameraId);
                 if (!cameraId.equals(mCameraId + ""))
                     continue;
                 CameraCharacteristics characteristics = mCameraManager.getCameraCharacteristics(cameraId);
 //                Integer facing = characteristics.get(CameraCharacteristics.LENS_FACING);
-//                HLog.e(TAG, " facing=" + facing + ",current= " + 0);
+//                Logger.e(TAG, " facing=" + facing + ",current= " + 0);
 //                if (facing != null && facing == CameraCharacteristics.LENS_FACING_FRONT)
 //                    continue;
                 StreamConfigurationMap map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
@@ -315,10 +315,10 @@ public class Camera2 extends CameraDevice.StateCallback implements IFunction, Im
                     continue;
                 Size[] choices = map.getOutputSizes(SurfaceTexture.class);
                 for (Size size : choices) {
-                    HLog.e(TAG, "size: " + size.toString());
+                    Logger.e(TAG, "size: " + size.toString());
                 }
                 int orientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
-                HLog.e(TAG, "orientation=" + orientation);
+                Logger.e(TAG, "orientation=" + orientation);
 
             }
         } catch (CameraAccessException e) {

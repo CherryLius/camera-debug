@@ -15,7 +15,7 @@ import android.util.DisplayMetrics;
 
 import com.hele.hardware.analyser.App;
 import com.hele.hardware.analyser.util.FileUtils;
-import com.hele.hardware.analyser.util.HLog;
+import com.hele.hardware.analyser.util.Logger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -67,7 +67,7 @@ public class ImageManager {
         sInstance = null;
     }
 
-    public void execute(final Image image, final IFunction function) {
+    public void execute(final Image image, final ICamera function) {
         if (image == null) return;
         mBackgroundHandler.post(new Runnable() {
             @Override
@@ -86,7 +86,7 @@ public class ImageManager {
         });
     }
 
-    public void execute(final byte[] data, final IFunction function) {
+    public void execute(final byte[] data, final ICamera function) {
         mBackgroundHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -106,7 +106,7 @@ public class ImageManager {
         });
     }
 
-    public void saveImage(final Bitmap bitmap, final byte[] data, final IFunction function) {
+    public void saveImage(final Bitmap bitmap, final byte[] data, final ICamera function) {
         mBackgroundHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -125,10 +125,10 @@ public class ImageManager {
                     }
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
-                    HLog.e(TAG, "FileNotFound", e);
+                    Logger.e(TAG, "FileNotFound", e);
                 } catch (IOException e) {
                     e.printStackTrace();
-                    HLog.e(TAG, "IOException", e);
+                    Logger.e(TAG, "IOException", e);
                 } finally {
                     if (outputStream != null)
                         try {
@@ -160,7 +160,7 @@ public class ImageManager {
         MediaScannerConnection.scanFile(mContext, path, null, new MediaScannerConnection.OnScanCompletedListener() {
             @Override
             public void onScanCompleted(String path, Uri uri) {
-                HLog.d(TAG, "scan file !!!!!!!!!!!!");
+                Logger.d(TAG, "scan file !!!!!!!!!!!!");
             }
         });
     }
@@ -180,7 +180,7 @@ public class ImageManager {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
-        HLog.d(TAG, "options: " + options.outWidth + "x" + options.outHeight);
+        Logger.d(TAG, "options: " + options.outWidth + "x" + options.outHeight);
 
         DisplayMetrics dm = context.getResources().getDisplayMetrics();
         int targetDensityDpi = dm.densityDpi;
@@ -190,7 +190,7 @@ public class ImageManager {
 
         double xScale = options.outWidth / (float) expectW;
         double yScale = options.outHeight / (float) expectH;
-        HLog.d(TAG, "xScale=" + xScale + ",yScale=" + yScale
+        Logger.d(TAG, "xScale=" + xScale + ",yScale=" + yScale
                 + ",targetDensity=" + targetDensityDpi);
 
         options.inTargetDensity = targetDensityDpi;
@@ -213,7 +213,7 @@ public class ImageManager {
                 inSampleSize *= 2;
             }
         }
-        HLog.i(TAG, "inSampleSize=" + inSampleSize);
+        Logger.i(TAG, "inSampleSize=" + inSampleSize);
         return inSampleSize;
     }
 }

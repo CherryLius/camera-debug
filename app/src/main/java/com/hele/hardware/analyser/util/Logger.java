@@ -6,7 +6,7 @@ import android.util.Log;
  * Created by Administrator on 2017/4/6.
  */
 
-public class HLog {
+public class Logger {
     private static final String TAG = "HELE.";
 
     public static void i(String tag, String msg) {

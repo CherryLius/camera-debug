@@ -19,9 +19,9 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 
 import com.cherry.library.ui.view.CountDownView;
-import com.hele.hardware.analyser.base.BaseFragment;
 import com.hele.hardware.analyser.R;
-import com.hele.hardware.analyser.util.HLog;
+import com.hele.hardware.analyser.base.BaseFragment;
+import com.hele.hardware.analyser.util.Logger;
 import com.hele.hardware.analyser.util.Utils;
 import com.ui.picker.TimePicker;
 
@@ -88,7 +88,7 @@ public class CaptureFragment extends BaseFragment implements CaptureContract.Vie
         if (getArguments() != null) {
             mHour = Integer.valueOf(getArguments().getString("hour", "0"));
             mMinute = Integer.valueOf(getArguments().getString("minute", "0"));
-            HLog.e(TAG, "mHour=" + mHour + ",mMinute=" + mMinute);
+            Logger.e(TAG, "mHour=" + mHour + ",mMinute=" + mMinute);
         }
         init();
     }
